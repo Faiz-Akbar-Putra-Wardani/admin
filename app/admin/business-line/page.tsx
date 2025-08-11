@@ -1,6 +1,6 @@
 "use client";
 import React, { useState, useEffect } from 'react';
-import { Plus, Edit, Trash2, Search, Briefcase, RefreshCw, AlertCircle, Info } from 'lucide-react';
+import { Plus, Edit, Trash2, Search, Users, RefreshCw, AlertCircle, Info } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import api from '../../../lib/api';
 import toast from 'react-hot-toast';
@@ -8,18 +8,19 @@ import toast from 'react-hot-toast';
 type BusinessLine = {
   id: number;
   title: string;
-  icon: string;
+  icon?: string;
+  icon_url?: string;
   title_business: string;
   description: string;
 };
 
-export default function BusinessLinesPage() {
+export default function BusinessLinePage() {
   const router = useRouter();
   const [searchTerm, setSearchTerm] = useState('');
   const [data, setData] = useState<BusinessLine[]>([]);
   const [filteredData, setFilteredData] = useState<BusinessLine[]>([]);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState<string |null>(null);
   const [confirmDeleteItem, setConfirmDeleteItem] = useState<BusinessLine | null>(null);
 
   const fetchData = async () => {
@@ -27,48 +28,38 @@ export default function BusinessLinesPage() {
     setError(null);
     try {
       const response = await api.get('/business-lines');
-      const businessData = response.data.data || response.data;
-      setData(businessData);
+      const resData = response.data.data || response.data;
+      setData(resData);
     } catch (error) {
-      console.error('Error fetching business lines:', error);
-      setError('Failed to fetch business lines data');
+      console.error('Error fetching data:', error);
+      setError('Failed to fetch business lines');
       setData([]);
     } finally {
       setLoading(false);
     }
   };
 
-  useEffect(() => {
-    fetchData();
-  }, []);
-
+  useEffect(() => { fetchData(); }, []);
   useEffect(() => {
     const filtered = data.filter(item =>
-      item.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      item.title_business.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      item.description.toLowerCase().includes(searchTerm.toLowerCase())
+      item.title?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      item.title_business?.toLowerCase().includes(searchTerm.toLowerCase())
     );
     setFilteredData(filtered);
   }, [data, searchTerm]);
 
-  const handleAdd = () => {
-    router.push('/admin/business-lines/new');
-  };
-
-  const handleEdit = (item: BusinessLine) => {
-    router.push(`/admin/business-lines/${item.id}/edit`);
-  };
+  const handleAdd = () => router.push('/admin/business-lines/new');
+  const handleEdit = (item: BusinessLine) => router.push(`/admin/business-lines/${item.id}/edit`);
 
   const handleDeleteConfirm = async () => {
     if (!confirmDeleteItem) return;
     setLoading(true);
     try {
       await api.delete(`/admin/business-lines/${confirmDeleteItem.id}`);
-      setData(prev => prev.filter(item => item.id !== confirmDeleteItem.id));
+      setData(prev => prev.filter(b => b.id !== confirmDeleteItem.id));
       toast.success(`${confirmDeleteItem.title} deleted successfully.`);
     } catch (error) {
-      console.error('Error deleting business line:', error);
-      toast.error('Failed to delete business line.');
+      toast.error('Failed to delete.');
     } finally {
       setLoading(false);
       setConfirmDeleteItem(null);
@@ -89,22 +80,24 @@ export default function BusinessLinesPage() {
               onClick={handleRefresh}
               disabled={loading}
               className="p-2 hover:bg-gray-800 rounded-lg transition-colors disabled:opacity-50"
-              title="Refresh data"
+              title="Refresh"
             >
               <RefreshCw size={16} className={loading ? 'animate-spin' : ''} />
             </button>
           </div>
+
+          {/* Desktop Only: Add Button */}
           <button
             onClick={handleAdd}
             disabled={loading}
-            className="bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 disabled:opacity-50 px-4 py-2 rounded-lg flex items-center space-x-2 transition-all"
+            className="hidden md:flex bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 disabled:opacity-50 px-4 py-2 rounded-lg items-center space-x-2 transition-all"
           >
             <Plus size={16} />
             <span>Add Business Line</span>
           </button>
         </div>
 
-        {/* Error Message */}
+        {/* Error */}
         {error && (
           <div className="mb-6 bg-red-900/50 border border-red-500 rounded-lg p-4 flex items-center space-x-3">
             <AlertCircle size={20} className="text-red-400" />
@@ -113,30 +106,33 @@ export default function BusinessLinesPage() {
         )}
 
         {/* Search */}
-        <div className="mb-6">
-          <div className="relative">
-            <Search size={20} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
-            <input
-              type="text"
-              placeholder="Search business lines..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              disabled={loading}
-              className="w-full pl-10 pr-4 py-2 bg-gray-800 border border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-white disabled:opacity-50"
-            />
-          </div>
+        <div className="mb-6 relative">
+          <Search size={20} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+          <input
+            type="text"
+            placeholder="Search..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            disabled={loading}
+            className="w-full pl-10 pr-4 py-2 bg-gray-800 border border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-white disabled:opacity-50"
+          />
         </div>
 
         {/* Content */}
-        {!loading && filteredData.length === 0 ? (
+        {loading ? (
           <div className="bg-gray-800 rounded-xl p-8 text-center">
-            <Briefcase size={48} className="mx-auto text-gray-600 mb-4" />
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto mb-4"></div>
+            <p className="text-gray-400">Loading...</p>
+          </div>
+        ) : filteredData.length === 0 ? (
+          <div className="bg-gray-800 rounded-xl p-8 text-center">
+            <Users size={48} className="mx-auto text-gray-600 mb-4" />
             <h3 className="text-lg font-semibold text-gray-300 mb-2">
-              {searchTerm ? 'No business lines found' : 'No business lines yet'}
+              {searchTerm ? 'No data found' : 'No business lines yet'}
             </h3>
             <p className="text-gray-400 mb-4">
-              {searchTerm
-                ? 'Try adjusting your search terms'
+              {searchTerm 
+                ? 'Try different keywords' 
                 : 'Start by adding your first business line'}
             </p>
             {!searchTerm && (
@@ -148,28 +144,34 @@ export default function BusinessLinesPage() {
               </button>
             )}
           </div>
-        ) : !loading && (
+        ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {filteredData.map((item) => (
-              <div key={item.id} className="bg-gray-800 rounded-xl p-6 hover:bg-gray-750 transition-colors">
+              <div key={item.id} className="bg-gray-800 rounded-xl p-6 hover:bg-gray-750 transition-colors flex flex-col">
                 {/* Icon */}
-                <div className="w-16 h-16 mx-auto mb-4 flex items-center justify-center rounded-full bg-gray-700 text-white text-2xl">
-                  {item.icon}
+                <div className="w-20 h-20 mx-auto mb-4 bg-gray-700 rounded-full overflow-hidden">
+                  {item.icon_url ? (
+                    <img src={item.icon_url} alt={item.title} className="w-full h-full object-cover" />
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center">
+                      <Users size={24} className="text-gray-400" />
+                    </div>
+                  )}
                 </div>
 
                 {/* Info */}
                 <div className="text-center mb-4">
                   <h3 className="text-lg font-semibold text-white mb-1">{item.title}</h3>
-                  <p className="text-blue-400 text-sm">{item.title_business}</p>
-                  <p className="text-gray-400 text-sm mt-2 line-clamp-3">{item.description}</p>
+                  <p className="text-gray-400 text-sm">{item.title_business}</p>
+                  <p className="text-gray-500 text-xs mt-1">{item.description}</p>
                 </div>
 
-                {/* Actions */}
-                <div className="flex space-x-2">
+                {/* Action Buttons */}
+                <div className="flex space-x-2 mb-2">
                   <button
                     onClick={() => handleEdit(item)}
                     disabled={loading}
-                    className="flex-1 bg-blue-600 hover:bg-blue-700 disabled:opacity-50 px-3 py-2 rounded-lg flex items-center justify-center space-x-1 text-sm"
+                    className="flex-1 bg-blue-600 hover:bg-blue-700 disabled:opacity-50 px-3 py-2 rounded-lg flex items-center justify-center space-x-1 transition-colors text-sm"
                   >
                     <Edit size={14} />
                     <span>Edit</span>
@@ -177,25 +179,33 @@ export default function BusinessLinesPage() {
                   <button
                     onClick={() => setConfirmDeleteItem(item)}
                     disabled={loading}
-                    className="flex-1 bg-red-600 hover:bg-red-700 disabled:opacity-50 px-3 py-2 rounded-lg flex items-center justify-center space-x-1 text-sm"
+                    className="flex-1 bg-red-600 hover:bg-red-700 disabled:opacity-50 px-3 py-2 rounded-lg flex items-center justify-center space-x-1 transition-colors text-sm"
                   >
                     <Trash2 size={14} />
                     <span>Delete</span>
                   </button>
                 </div>
+
+                {/* Mobile Only: Add Button (inside card) */}
+                <button
+                  onClick={handleAdd}
+                  disabled={loading}
+                  className="md:hidden mt-2 bg-blue-600 hover:bg-blue-700 text-sm text-white px-3 py-2 rounded-lg flex items-center justify-center space-x-1 transition-all"
+                >
+                  <Plus size={14} />
+                  <span>Add Business Line</span>
+                </button>
               </div>
             ))}
           </div>
         )}
 
-        {/* Stats */}
+        {/* Footer Stats */}
         {!loading && (
           <div className="mt-8 bg-gray-800 rounded-xl p-4">
             <div className="flex items-center justify-between text-sm text-gray-400">
-              <span>Total: {data.length} business lines</span>
-              {searchTerm && (
-                <span>Filtered: {filteredData.length} results</span>
-              )}
+              <span>Total: {data.length}</span>
+              {searchTerm && <span>Filtered: {filteredData.length}</span>}
             </div>
           </div>
         )}
@@ -208,9 +218,7 @@ export default function BusinessLinesPage() {
             <h2 className="text-lg font-semibold text-white mb-2">
               Delete {confirmDeleteItem.title}?
             </h2>
-            <p className="text-sm text-gray-400 mb-4">
-              Are you sure you want to delete this business line? This action cannot be undone.
-            </p>
+            <p className="text-sm text-gray-400 mb-4">This action cannot be undone.</p>
             <div className="flex justify-end space-x-2">
               <button
                 onClick={() => setConfirmDeleteItem(null)}
