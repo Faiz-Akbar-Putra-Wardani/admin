@@ -20,9 +20,6 @@ type CareerOpportunityItem = {
   image_url: string;
   description: string;
   requirements: string;
-  location: string;
-  employment_type: string;
-  salary_range: string;
 };
 
 export default function CareerOpportunitiesPage() {
@@ -60,9 +57,7 @@ export default function CareerOpportunitiesPage() {
       (item) =>
         item.title?.toLowerCase().includes(searchTerm.toLowerCase()) ||
         item.description?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        item.requirements?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        item.location?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        item.employment_type?.toLowerCase().includes(searchTerm.toLowerCase())
+        item.requirements?.toLowerCase().includes(searchTerm.toLowerCase())
     );
     setFilteredData(filtered);
   }, [data, searchTerm]);
@@ -204,16 +199,6 @@ export default function CareerOpportunitiesPage() {
                     <p className="text-gray-400 text-sm line-clamp-3 mb-2">
                       {career.description}
                     </p>
-                    {career.location && (
-                      <p className="text-gray-400 text-sm">
-                        Location: {career.location}
-                      </p>
-                    )}
-                    {career.employment_type && (
-                      <p className="text-gray-400 text-sm">
-                        Type: {career.employment_type}
-                      </p>
-                    )}
                   </div>
                   <div className="flex space-x-2">
                     <button
