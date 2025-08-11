@@ -35,13 +35,13 @@ export default function Sidebar({ sidebarOpen, setSidebarOpen }: SidebarProps) {
       title: 'Career',
       icon: Building,
       href: '/admin/career',
-      active: pathname.startsWith('/admin/career')
+      active: pathname === '/admin/career' || pathname.startsWith('/admin/career/')
     },
     {
       title: 'Career Opportunities',
       icon: FileText,
       href: '/admin/career-opportunities',
-      active: pathname.startsWith('/admin/career-opportunities')
+      active: pathname === '/admin/career-opportunities' || pathname.startsWith('/admin/career-opportunities/')
     },
     {
       title: 'Clients',
