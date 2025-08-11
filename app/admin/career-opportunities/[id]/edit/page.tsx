@@ -11,9 +11,6 @@ interface CareerFormData {
   title: string;
   description: string;
   requirements: string;
-  location: string;
-  employment_type: string;
-  salary_range: string;
 }
 
 export default function CareerOpportunitiesEditPage() {
@@ -33,9 +30,6 @@ export default function CareerOpportunitiesEditPage() {
     title: "",
     description: "",
     requirements: "",
-    location: "",
-    employment_type: "",
-    salary_range: "",
   });
 
   const [imagePreview, setImagePreview] = useState<string | null>(null);
@@ -54,9 +48,6 @@ export default function CareerOpportunitiesEditPage() {
           title: careerData.title || "",
           description: careerData.description || "",
           requirements: careerData.requirements || "",
-          location: careerData.location || "",
-          employment_type: careerData.employment_type || "",
-          salary_range: careerData.salary_range || "",
         });
         if (careerData.image_url) {
           setImagePreview(careerData.image_url);
@@ -136,9 +127,6 @@ export default function CareerOpportunitiesEditPage() {
       submitData.append("title", formData.title);
       submitData.append("description", formData.description);
       submitData.append("requirements", formData.requirements);
-      submitData.append("location", formData.location);
-      submitData.append("employment_type", formData.employment_type);
-      submitData.append("salary_range", formData.salary_range);
       
       if (formData.image) {
         submitData.append("image", formData.image);
@@ -252,52 +240,6 @@ export default function CareerOpportunitiesEditPage() {
 
           <div>
             <label className="block text-sm font-medium text-gray-300 mb-2">
-              Location
-            </label>
-            <input
-              type="text"
-              value={formData.location}
-              onChange={(e) => handleInputChange("location", e.target.value)}
-              disabled={isSubmitting}
-              className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white"
-              placeholder="e.g., Jakarta, Remote, Hybrid"
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-300 mb-2">
-              Employment Type
-            </label>
-            <select
-              value={formData.employment_type}
-              onChange={(e) => handleInputChange("employment_type", e.target.value)}
-              disabled={isSubmitting}
-              className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white"
-            >
-              <option value="">Select employment type</option>
-              <option value="Full-Time">Full-Time</option>
-              <option value="Part-Time">Part-Time</option>
-              <option value="Contract">Contract</option>
-              <option value="Internship">Internship</option>
-            </select>
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-300 mb-2">
-              Salary Range
-            </label>
-            <input
-              type="text"
-              value={formData.salary_range}
-              onChange={(e) => handleInputChange("salary_range", e.target.value)}
-              disabled={isSubmitting}
-              className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white"
-              placeholder="e.g., Rp 5jt - 8jt"
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-300 mb-2">
               Description *
             </label>
             <textarea
@@ -321,7 +263,7 @@ export default function CareerOpportunitiesEditPage() {
               placeholder="Enter career requirements"
             />
           </div>
-
+          
           <div className="flex space-x-4 pt-4">
             <button
               type="submit"
@@ -336,7 +278,7 @@ export default function CareerOpportunitiesEditPage() {
               ) : (
                 <>
                   <Save size={16} />
-                  <span>Save Career</span>
+                  <span>Save Changes</span>
                 </>
               )}
             </button>
