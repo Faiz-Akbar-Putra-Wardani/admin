@@ -1,12 +1,12 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { Save, ArrowLeft, Upload, AlertCircle, Briefcase } from "lucide-react";
+import { Save, ArrowLeft, Upload, AlertCircle, Monitor } from "lucide-react";
 import { useRouter } from "next/navigation";
 import api from "../../../../lib/api";
 import toast from "react-hot-toast";
 
-export default function BusinessLineCreatePage() {
+export default function TechnologyCreatePage() {
   const router = useRouter();
 
   useEffect(() => {
@@ -16,26 +16,22 @@ export default function BusinessLineCreatePage() {
     }
   }, [router]);
 
-  interface BusinessLineFormData {
-    icon: File | null;
-    title: string;
-    title_business: string;
-    description: string;
+  interface TechnologyFormData {
+    image: File | null;
+    name: string;
   }
 
-  const [formData, setFormData] = useState<BusinessLineFormData>({
-    icon: null,
-    title: "",
-    title_business: "",
-    description: "",
+  const [formData, setFormData] = useState<TechnologyFormData>({
+    image: null,
+    name: "",
   });
 
-  const [iconPreview, setIconPreview] = useState<string | null>(null);
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const handleInputChange = (
-    field: keyof BusinessLineFormData,
+    field: keyof TechnologyFormData,
     value: string
   ) => {
     setFormData((prev) => ({
@@ -45,7 +41,7 @@ export default function BusinessLineCreatePage() {
     if (error) setError(null);
   };
 
-  const handleIconChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
@@ -55,33 +51,29 @@ export default function BusinessLineCreatePage() {
     }
 
     if (file.size > 5 * 1024 * 1024) {
-      setError("Icon size should be less than 5MB");
+      setError("Image size should be less than 5MB");
       return;
     }
 
     const reader = new FileReader();
     reader.onload = (event) => {
       if (typeof event.target?.result === "string") {
-        setIconPreview(event.target.result);
+        setImagePreview(event.target.result);
       }
     };
     reader.readAsDataURL(file);
 
-    setFormData((prev) => ({ ...prev, icon: file }));
+    setFormData((prev) => ({ ...prev, image: file }));
     setError(null);
   };
 
   const validateForm = () => {
-    if (!formData.title.trim()) {
-      setError("Title is required");
+    if (!formData.name.trim()) {
+      setError("Name is required");
       return false;
     }
-    if (!formData.title_business.trim()) {
-      setError("Title Business is required");
-      return false;
-    }
-    if (!formData.description.trim()) {
-      setError("Description is required");
+    if (!formData.image) {
+      setError("Image is required");
       return false;
     }
     return true;
@@ -103,14 +95,14 @@ export default function BusinessLineCreatePage() {
         }
       });
 
-      await api.post("/admin/business-lines", submitData, {
+      await api.post('/admin/technologies', submitData, {
         headers: {
-          "Content-Type": "multipart/form-data",
+          'Content-Type': 'multipart/form-data',
         },
       });
 
-      toast.success("Business line added successfully!");
-      router.push("/admin/business-lines");
+      toast.success("Technology added successfully!");
+      router.push("/admin/technology");
     } catch (error: any) {
       const message =
         error?.response?.data?.message || "An unexpected error occurred";
@@ -130,10 +122,8 @@ export default function BusinessLineCreatePage() {
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center space-x-3">
-          <Briefcase size={24} className="text-blue-500" />
-          <h1 className="text-2xl font-bold text-white">
-            Add New Business Line
-          </h1>
+          <Monitor size={24} className="text-blue-500" />
+          <h1 className="text-2xl font-bold text-white">Add New Technology</h1>
         </div>
         <button
           onClick={handleCancel}
@@ -156,16 +146,16 @@ export default function BusinessLineCreatePage() {
       {/* Form */}
       <div className="bg-gray-800 rounded-xl p-6">
         <form onSubmit={handleSubmit} className="space-y-6">
-          {/* Icon */}
+          {/* Image */}
           <div>
             <label className="block text-sm font-medium text-gray-300 mb-2">
-              Icon
+              Image *
             </label>
             <div className="flex items-center space-x-4">
               <div className="w-24 h-24 bg-gray-700 rounded-lg flex items-center justify-center overflow-hidden">
-                {iconPreview ? (
+                {imagePreview ? (
                   <img
-                    src={iconPreview}
+                    src={imagePreview}
                     alt="Preview"
                     className="w-full h-full object-cover"
                   />
@@ -177,71 +167,37 @@ export default function BusinessLineCreatePage() {
                 <input
                   type="file"
                   accept="image/*"
-                  onChange={handleIconChange}
+                  onChange={handleImageChange}
                   disabled={isSubmitting}
                   className="hidden"
-                  id="icon-upload"
+                  id="image-upload"
                 />
                 <label
-                  htmlFor="icon-upload"
+                  htmlFor="image-upload"
                   className={`bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-lg cursor-pointer transition-colors inline-block ${
                     isSubmitting ? "opacity-50 cursor-not-allowed" : ""
                   }`}
                 >
-                  Choose Icon
+                  Choose Image
                 </label>
                 <p className="text-sm text-gray-400 mt-1">
-                  Upload an icon for the business line (max 5MB)
+                  Upload an image for the technology (max 5MB)
                 </p>
               </div>
             </div>
           </div>
 
-          {/* Title */}
+          {/* Name */}
           <div>
             <label className="block text-sm font-medium text-gray-300 mb-2">
-              Title *
+              Name *
             </label>
             <input
               type="text"
-              value={formData.title}
-              onChange={(e) => handleInputChange("title", e.target.value)}
-              placeholder="Enter title"
+              value={formData.name}
+              onChange={(e) => handleInputChange("name", e.target.value)}
+              placeholder="Enter technology name"
               disabled={isSubmitting}
-              className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-white disabled:opacity-50"
-            />
-          </div>
-
-          {/* Title Business */}
-          <div>
-            <label className="block text-sm font-medium text-gray-300 mb-2">
-              Title Business *
-            </label>
-            <input
-              type="text"
-              value={formData.title_business}
-              onChange={(e) =>
-                handleInputChange("title_business", e.target.value)
-              }
-              placeholder="Enter business title"
-              disabled={isSubmitting}
-              className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-white disabled:opacity-50"
-            />
-          </div>
-
-          {/* Description */}
-          <div>
-            <label className="block text-sm font-medium text-gray-300 mb-2">
-              Description *
-            </label>
-            <textarea
-              value={formData.description}
-              onChange={(e) =>
-                handleInputChange("description", e.target.value)
-              }
-              placeholder="Enter description"
-              disabled={isSubmitting}
-              rows={4}
               className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-white disabled:opacity-50"
             />
           </div>
@@ -261,7 +217,7 @@ export default function BusinessLineCreatePage() {
               ) : (
                 <>
                   <Save size={16} />
-                  <span>Save Business Line</span>
+                  <span>Save Technology</span>
                 </>
               )}
             </button>
