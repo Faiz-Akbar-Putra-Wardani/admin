@@ -1,6 +1,6 @@
 "use client";
 import React, { useState, useEffect } from 'react';
-import { Plus, Edit, Trash2, Search, Layers, RefreshCw, AlertCircle, ArrowLeft, Info } from 'lucide-react';
+import { Plus, Edit, Trash2, Search, Layers, RefreshCw, AlertCircle, Info } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import api from '../../../lib/api';
 import toast from 'react-hot-toast';
@@ -27,10 +27,10 @@ export default function ServicePage() {
     try {
       const response = await api.get('/services-landing-pages');
       const serviceData = response.data.data || response.data;
-      setData(serviceData);
+      setData(Array.isArray(serviceData) ? serviceData : [serviceData]);
     } catch (error) {
       console.error('Error fetching services:', error);
-      setError('Gagal mengambil data layanan');
+      setError('Failed to fetch service data');
       setData([]);
     } finally {
       setLoading(false);
@@ -74,10 +74,10 @@ export default function ServicePage() {
     try {
       await api.delete(`/admin/services-landing-pages/${confirmDeleteItem.id}`);
       setData(prev => prev.filter(service => service.id !== confirmDeleteItem.id));
-      toast.success(`${confirmDeleteItem.title} berhasil dihapus.`);
+      toast.success(`"${confirmDeleteItem.title}" deleted successfully.`);
     } catch (error) {
       console.error('Error deleting service:', error);
-      toast.error('Gagal menghapus layanan.');
+      toast.error('Failed to delete service.');
     } finally {
       setLoading(false);
       setConfirmDeleteItem(null);
@@ -155,8 +155,8 @@ export default function ServicePage() {
             </h3>
             <p className="text-gray-400 mb-4">
               {searchTerm 
-                ? 'Coba sesuaikan kata kunci pencarian' 
-                : 'Mulai dengan menambahkan layanan pertama'
+                ? 'Try adjusting your search terms' 
+                : 'Start by adding your first service'
               }
             </p>
             {!searchTerm && (
@@ -169,41 +169,46 @@ export default function ServicePage() {
             )}
           </div>
         ) : !loading && (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filteredData.map((service) => (
-              <div key={service.id} className="bg-gray-800 rounded-xl p-6 hover:bg-gray-750 transition-colors">
-                {/* Info */}
-                <div className="text-center mb-4">
-                  <h3 className="text-lg font-semibold text-white mb-1">
-                    {service.title}
-                  </h3>
-                  <p className="text-gray-400 text-sm">{service.name_service}</p>
-                  <p className="text-gray-500 text-xs line-clamp-3">
-                    {service.description || 'Tidak ada deskripsi'}
-                  </p>
-                </div>
-
-                {/* Actions */}
-                <div className="flex space-x-2">
-                  <button
-                    onClick={() => handleEdit(service)}
-                    disabled={loading}
-                    className="flex-1 bg-blue-600 hover:bg-blue-700 disabled:opacity-50 px-3 py-2 rounded-lg flex items-center justify-center space-x-1 transition-colors text-sm"
-                  >
-                    <Edit size={14} />
-                    <span>Edit</span>
-                  </button>
-                  <button
-                    onClick={() => setConfirmDeleteItem(service)}
-                    disabled={loading}
-                    className="flex-1 bg-red-600 hover:bg-red-700 disabled:opacity-50 px-3 py-2 rounded-lg flex items-center justify-center space-x-1 transition-colors text-sm"
-                  >
-                    <Trash2 size={14} />
-                    <span>Delete</span>
-                  </button>
-                </div>
-              </div>
-            ))}
+          <div className="overflow-x-auto">
+            <table className="min-w-full divide-y divide-gray-700 bg-gray-800 rounded-xl overflow-hidden">
+              <thead className="bg-gray-900">
+                <tr>
+                  <th className="px-4 py-3 text-left text-sm font-semibold text-gray-300">Title</th>
+                  <th className="px-4 py-3 text-left text-sm font-semibold text-gray-300">Service Name</th>
+                  <th className="px-4 py-3 text-left text-sm font-semibold text-gray-300">Description</th>
+                  <th className="px-4 py-3 text-center text-sm font-semibold text-gray-300">Actions</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-gray-700">
+                {filteredData.map((service) => (
+                  <tr key={service.id} className="hover:bg-gray-750 transition">
+                    <td className="px-4 py-3 text-sm text-gray-100">{service.title}</td>
+                    <td className="px-4 py-3 text-sm text-gray-200 whitespace-pre-line">{service.name_service}</td>
+                    <td className="px-4 py-3 text-sm text-gray-200 whitespace-pre-line">{service.description || 'No description'}</td>
+                    <td className="px-4 py-3 text-sm text-center">
+                      <div className="flex justify-center space-x-3">
+                        <button
+                          onClick={() => handleEdit(service)}
+                          disabled={loading}
+                          className="bg-blue-600 hover:bg-blue-700 text-white py-1 px-4 rounded-lg flex items-center justify-center text-sm disabled:opacity-50"
+                        >
+                          <Edit size={14} className="mr-1" />
+                          Edit
+                        </button>
+                        <button
+                          onClick={() => setConfirmDeleteItem(service)}
+                          disabled={loading}
+                          className="bg-red-600 hover:bg-red-700 text-white py-1 px-4 rounded-lg flex items-center justify-center text-sm disabled:opacity-50"
+                        >
+                          <Trash2 size={14} className="mr-1" />
+                          Delete
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
         )}
 
@@ -219,14 +224,15 @@ export default function ServicePage() {
           </div>
         )}
       </div>
+      {/* Delete Confirmation Modal */}
       {confirmDeleteItem && (
         <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50">
           <div className="bg-gray-900 border border-gray-700 p-6 rounded-xl shadow-xl w-full max-w-md">
             <h2 className="text-lg font-semibold text-white mb-2">
-              Delete {confirmDeleteItem.title}?
+              Delete "{confirmDeleteItem.title}"?
             </h2>
             <p className="text-sm text-gray-400 mb-4">
-              Apakah Anda yakin ingin menghapus layanan ini? Tindakan ini tidak bisa dibatalkan.
+              Are you sure you want to delete this service? This action cannot be undone.
             </p>
             <div className="flex justify-end space-x-2">
               <button
@@ -238,9 +244,9 @@ export default function ServicePage() {
               <button
                 onClick={handleDeleteConfirm}
                 disabled={loading}
-                className="px-4 py-2 text-sm bg-red-600 hover:bg-red-700 text-white rounded-lg disabled:opacity-50"
+                className="px-4 py-2 text-sm bg-red-600 hover:bg-red-700 text-white Rounded-lg disabled:opacity-50"
               >
-                {loading ? 'Menghapus...' : 'Delete'}
+                {loading ? 'Deleting...' : 'Delete'}
               </button>
             </div>
           </div>
