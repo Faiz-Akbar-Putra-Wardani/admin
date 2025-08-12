@@ -84,13 +84,13 @@ export default function Sidebar({ sidebarOpen, setSidebarOpen }: SidebarProps) {
       title: 'Service',
       icon: Briefcase,
       href: '/admin/service',
-      active: pathname.startsWith('/admin/service')
+      active: pathname === '/admin/service' || pathname.startsWith('/admin/service/')
     },
     {
       title: 'Service Landing Page',
       icon: Briefcase,
       href: '/admin/service-landingpage',
-      active: pathname.startsWith('/admin/service-landingpage')
+      active: pathname === '/admin/service-landingpage' || pathname.startsWith('/admin/service-landingpage/')
     },
     
     
