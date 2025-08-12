@@ -56,13 +56,25 @@ export default function Sidebar({ sidebarOpen, setSidebarOpen }: SidebarProps) {
       active: pathname.startsWith('/admin/microdata-options')
     },
     {
-      title: 'position',
+      title : 'Partnerships',
+      icon: FileText,
+      href: '/admin/partnerships',
+      active: pathname.startsWith('/admin/partnerships')
+    },
+    {
+      title: 'Portofolio Categories',
+      icon: FileText,
+      href: '/admin/portofolio-categories',
+      active: pathname.startsWith('/admin/portofolio-categories')
+    },
+    {
+      title: 'Position',
       icon: FileText,
       href: '/admin/position',
       active: pathname.startsWith('/admin/position')
     },
     {
-      title: 'process',
+      title: 'Process',
       icon: FileText,
       href: '/admin/process',
       active: pathname.startsWith('/admin/process')
