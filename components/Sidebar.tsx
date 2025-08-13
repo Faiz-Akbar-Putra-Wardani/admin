@@ -78,7 +78,7 @@ export default function Sidebar({ sidebarOpen, setSidebarOpen }: SidebarProps) {
       active: pathname.startsWith("/admin/microdata-options"),
     },
     {
-      title: "Partnerships",
+      title: "Partnership",
       icon: Handshake,
       href: "/admin/partnership",
       active: pathname.startsWith("/admin/partnership"),

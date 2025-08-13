@@ -39,7 +39,7 @@ export default function PartnershipPage() {
       setData(partnershipData);
     } catch (error) {
       console.error("Error fetching partnerships:", error);
-      setError("Failed to fetch partnership data");
+      setError("Gagal mengambil data partnership");
       setData([]);
     } finally {
       setLoading(false);
@@ -73,10 +73,10 @@ export default function PartnershipPage() {
       setData((prev) =>
         prev.filter((partnership) => partnership.id !== confirmDeleteItem.id)
       );
-      toast.success(`Partnership deleted successfully.`);
+      toast.success("Partnership berhasil dihapus.");
     } catch (error) {
       console.error("Error deleting partnership:", error);
-      toast.error("Failed to delete partnership.");
+      toast.error("Gagal menghapus partnership.");
     } finally {
       setLoading(false);
       setConfirmDeleteItem(null);
@@ -91,8 +91,8 @@ export default function PartnershipPage() {
     <div className="p-6">
       <div className="max-w-6xl mx-auto">
         {/* Header */}
-        <div className="flex items-center justify-between mb-6">
-          <div className="flex items-center space-x-3">
+        <div className="flex flex-col sm:flex-row items-center justify-between mb-6">
+          <div className="flex items-center space-x-3 mb-4 sm:mb-0">
             <Info size={24} className="text-blue-500" />
             <h1 className="text-2xl font-bold">Partnership Management</h1>
             <button
@@ -107,7 +107,7 @@ export default function PartnershipPage() {
           <button
             onClick={handleAdd}
             disabled={loading}
-            className="bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 disabled:opacity-50 px-4 py-2 rounded-lg flex items-center space-x-2 transition-all"
+            className="w-full sm:w-auto bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 disabled:opacity-50 px-4 py-2 rounded-lg flex items-center space-x-2 transition-all"
           >
             <Plus size={16} />
             <span>Add Partnership</span>
