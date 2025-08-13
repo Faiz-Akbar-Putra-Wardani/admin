@@ -74,7 +74,7 @@ const handleDeleteConfirm = async () => {
   if (!confirmDeleteItem) return;
   setLoading(true);
   try {
-    await api.delete(`/admin/teams/${confirmDeleteItem.id}`);
+    await api.delete(`/admin/business-lines/${confirmDeleteItem.id}`);
     setData(prev => prev.filter(team => team.id !== confirmDeleteItem.id));
     toast.success(`${confirmDeleteItem.title} deleted successfully.`);
   } catch (error) {
@@ -239,7 +239,8 @@ const handleDeleteConfirm = async () => {
                 <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50">
                   <div className="bg-gray-900 border border-gray-700 p-6 rounded-xl shadow-xl w-full max-w-md">
                     <h2 className="text-lg font-semibold text-white mb-2">
-                      Delete {confirmDeleteItem.icon}?
+                      Delete {confirmDeleteItem.title
+                      }?
                     </h2>
                     <p className="text-sm text-gray-400 mb-4">
                       Are you sure you want to delete this team member? This action cannot be undone..
