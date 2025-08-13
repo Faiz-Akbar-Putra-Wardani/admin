@@ -24,7 +24,7 @@ export default function microdataOptionPage() {
     setLoading(true);
     setError(null);
     try {
-      const response = await api.get("/microdata-options");
+      const response = await api.get("admin/microdata-options");
       // Menangani struktur data respons yang mungkin bervariasi
       const microdataOptionData = response.data.data || response.data;
       if (Array.isArray(microdataOptionData)) {

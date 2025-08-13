@@ -65,14 +65,14 @@ export default function MicrodataOptionCreatePage() {
 
     try {
       // Mengirim data ke endpoint API yang benar
-      await api.post("/microdata-options", formData, {
+      await api.post("admin/microdata-options", formData, {
         headers: {
           "Content-Type": "application/json",
         },
       });
 
       toast.success("Microdata Option added successfully!");
-      router.push("/admin/microdata-option");
+      router.push("/admin/microdata-options");
     } catch (error: any) {
       const message =
         error?.response?.data?.message || "An unexpected error occurred";
