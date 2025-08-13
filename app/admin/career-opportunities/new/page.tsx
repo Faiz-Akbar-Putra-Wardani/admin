@@ -128,7 +128,7 @@ export default function NewCareerOpportunityPage() {
   };
 
   return (
-    <div className="p-6">
+    <div className="p-4 md:p-6">
       <div className="flex items-center mb-6">
         <button
           onClick={handleCancel}
@@ -137,24 +137,24 @@ export default function NewCareerOpportunityPage() {
         >
           <ArrowLeft size={20} className="text-gray-300" />
         </button>
-        <h1 className="text-2xl font-bold text-white">New Career Opportunity</h1>
+        <h1 className="text-xl md:text-2xl font-bold text-white">New Career Opportunity</h1>
       </div>
 
       {error && (
         <div className="mb-6 bg-red-900/50 border border-red-500 rounded-lg p-4 flex items-center space-x-3">
           <AlertCircle size={20} className="text-red-400" />
-          <span className="text-red-200">{error}</span>
+          <span className="text-red-200 text-sm">{error}</span>
         </div>
       )}
 
-      <div className="bg-gray-800 rounded-xl p-6">
+      <div className="bg-gray-800 rounded-xl p-4 md:p-6">
         <form onSubmit={handleSubmit} className="space-y-6">
           <div>
             <label className="block text-sm font-medium text-gray-300 mb-2">
               Image
             </label>
             <div className="flex items-center space-x-4">
-              <div className="w-24 h-24 bg-gray-700 rounded-lg flex items-center justify-center overflow-hidden">
+              <div className="w-24 h-24 bg-gray-700 rounded-lg flex-shrink-0 flex items-center justify-center overflow-hidden">
                 {imagePreview ? (
                   <img
                     src={imagePreview}
@@ -165,7 +165,7 @@ export default function NewCareerOpportunityPage() {
                   <Upload size={24} className="text-gray-400" />
                 )}
               </div>
-              <div>
+              <div className="flex-1">
                 <input
                   type="file"
                   accept="image/*"
@@ -176,7 +176,7 @@ export default function NewCareerOpportunityPage() {
                 />
                 <label
                   htmlFor="image-upload"
-                  className={`bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-lg cursor-pointer transition-colors inline-block ${
+                  className={`bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-lg cursor-pointer transition-colors inline-block text-white ${
                     isSubmitting ? "opacity-50 cursor-not-allowed" : ""
                   }`}
                 >
@@ -198,7 +198,7 @@ export default function NewCareerOpportunityPage() {
               value={formData.title}
               onChange={(e) => handleInputChange("title", e.target.value)}
               disabled={isSubmitting}
-              className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white"
+              className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400"
               placeholder="Enter career title"
             />
           </div>
@@ -211,7 +211,7 @@ export default function NewCareerOpportunityPage() {
               value={formData.description}
               onChange={(e) => handleInputChange("description", e.target.value)}
               disabled={isSubmitting}
-              className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white h-32 resize-none"
+              className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white h-32 resize-none placeholder-gray-400"
               placeholder="Enter career description"
             />
           </div>
@@ -224,16 +224,16 @@ export default function NewCareerOpportunityPage() {
               value={formData.requirements}
               onChange={(e) => handleInputChange("requirements", e.target.value)}
               disabled={isSubmitting}
-              className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white h-32 resize-none"
+              className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white h-32 resize-none placeholder-gray-400"
               placeholder="Enter career requirements"
             />
           </div>
 
-          <div className="flex space-x-4 pt-4">
+          <div className="flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-4 pt-4">
             <button
               type="submit"
               disabled={isSubmitting}
-              className="flex-1 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 disabled:opacity-50 px-4 py-2 rounded-lg flex items-center justify-center space-x-2 text-white"
+              className="flex-1 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 disabled:opacity-50 px-4 py-2 rounded-lg flex items-center justify-center space-x-2 text-white transition-all"
             >
               {isSubmitting ? (
                 <>
@@ -251,7 +251,7 @@ export default function NewCareerOpportunityPage() {
               type="button"
               onClick={handleCancel}
               disabled={isSubmitting}
-              className="flex-1 bg-gray-600 hover:bg-gray-700 px-4 py-2 rounded-lg text-white"
+              className="flex-1 bg-gray-600 hover:bg-gray-700 px-4 py-2 rounded-lg text-white transition-colors"
             >
               Cancel
             </button>
