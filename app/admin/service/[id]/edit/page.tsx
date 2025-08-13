@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { Save, ArrowLeft, Upload, AlertCircle, Briefcase } from "lucide-react";
+import { Save, ArrowLeft, Upload, Briefcase } from "lucide-react";
 import { useRouter, useParams } from "next/navigation";
 import api from "../../../../../lib/api";
 import toast from "react-hot-toast";
@@ -138,147 +138,138 @@ export default function ServiceEditPage() {
     router.back();
   };
 
+  if (loading) {
+    return (
+      <div className="p-4 sm:p-6">
+        <div className="bg-gray-800 rounded-xl p-8 text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto mb-4" />
+          <p className="text-gray-400">Loading...</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <div className="p-6">
+    <div className="p-4 sm:p-6">
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center space-x-3">
-          <Briefcase size={24} className="text-blue-500" />
-          <h1 className="text-2xl font-bold text-white">Edit Service</h1>
+          <button
+            onClick={() => router.back()}
+            className="p-2 hover:bg-gray-800 rounded-lg"
+          >
+            <ArrowLeft size={20} />
+          </button>
+          <h1 className="text-2xl font-bold text-white">
+            Edit Service
+          </h1>
         </div>
-        <button
-          onClick={handleCancel}
-          disabled={isSubmitting || loading}
-          className="p-2 hover:bg-gray-800 rounded-lg transition-colors disabled:opacity-50"
-          title="Back"
-        >
-          <ArrowLeft size={20} className="text-gray-300" />
-        </button>
       </div>
 
-      {/* Loading State */}
-      {loading && (
-        <div className="bg-gray-800 rounded-xl p-8 text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto mb-4"></div>
-          <p className="text-gray-400">Loading service data...</p>
+      {/* Error */}
+      {error && (
+        <div className="mb-6 bg-red-900/50 border border-red-500 p-4 rounded text-red-200">
+          {error}
         </div>
       )}
 
-      {!loading && (
-        <>
-          {/* Error */}
-          {error && (
-            <div className="mb-6 bg-red-900/50 border border-red-500 rounded-lg p-4 flex items-center space-x-3">
-              <AlertCircle size={20} className="text-red-400" />
-              <span className="text-red-200">{error}</span>
-            </div>
-          )}
-
-          {/* Form */}
-          <div className="bg-gray-800 rounded-xl p-6">
-            <form onSubmit={handleSubmit} className="space-y-6">
-              {/* Icon */}
-              <div>
-                <label className="block text-sm font-medium text-gray-300 mb-2">
-                  Icon
-                </label>
-                <div className="flex items-center space-x-4">
-                  <div className="w-24 h-24 bg-gray-700 rounded-lg flex items-center justify-center overflow-hidden">
-                    {imagePreview ? (
-                      <img
-                        src={imagePreview}
-                        alt="Preview"
-                        className="w-full h-full object-cover"
-                      />
-                    ) : (
-                      <Upload size={24} className="text-gray-400" />
-                    )}
-                  </div>
-                  <div>
-                    <input
-                      type="file"
-                      accept="image/*"
-                      onChange={handleImageChange}
-                      disabled={isSubmitting}
-                      className="hidden"
-                      id="icon-upload"
-                    />
-                    <label
-                      htmlFor="icon-upload"
-                      className={`bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-lg cursor-pointer transition-colors inline-block ${
-                        isSubmitting ? "opacity-50 cursor-not-allowed" : ""
-                      }`}
-                    >
-                      Choose Icon
-                    </label>
-                    <p className="text-sm text-gray-400 mt-1">
-                      Upload an icon for the service (max 5MB)
-                    </p>
-                  </div>
-                </div>
+      {/* Form */}
+      <div className="bg-gray-800 rounded-xl p-4 sm:p-6">
+        <form onSubmit={handleSubmit} className="space-y-6">
+          {/* Icon Upload - Centered on Mobile */}
+          <div>
+            <label className="block text-sm font-medium text-gray-300 mb-2">
+              Icon
+            </label>
+            <div className="flex flex-col items-center sm:flex-row sm:items-center sm:space-x-4">
+              <div className="w-24 h-24 bg-gray-700 rounded-lg overflow-hidden flex items-center justify-center">
+                {imagePreview ? (
+                  <img
+                    src={imagePreview}
+                    className="w-full h-full object-cover"
+                    alt="preview"
+                  />
+                ) : (
+                  <Upload size={24} className="text-gray-400" />
+                )}
               </div>
-
-              {/* Name */}
-              <div>
-                <label className="block text-sm font-medium text-gray-300 mb-2">
-                  Name *
-                </label>
+              <div className="mt-3 sm:mt-0 flex flex-col items-center sm:items-start">
                 <input
-                  type="text"
-                  value={formData.name}
-                  onChange={(e) => handleInputChange("name", e.target.value)}
-                  placeholder="Enter service name"
+                  id="icon-file-edit"
+                  type="file"
+                  accept="image/*"
+                  onChange={handleImageChange}
                   disabled={isSubmitting}
-                  className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-white disabled:opacity-50"
+                  className="hidden"
                 />
-              </div>
-
-              {/* Description */}
-              <div>
-                <label className="block text-sm font-medium text-gray-300 mb-2">
-                  Description *
+                <label
+                  htmlFor="icon-file-edit"
+                  className={`bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-lg cursor-pointer text-white ${
+                    isSubmitting ? "opacity-50" : ""
+                  }`}
+                >
+                  Choose Icon
                 </label>
-                <textarea
-                  value={formData.description}
-                  onChange={(e) => handleInputChange("description", e.target.value)}
-                  placeholder="Enter service description"
-                  disabled={isSubmitting}
-                  className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-white h-32 resize-none"
-                />
+                <p className="text-sm text-gray-400 mt-1">Max 5MB</p>
               </div>
-
-              {/* Actions */}
-              <div className="flex space-x-4 pt-4">
-                <button
-                  type="submit"
-                  disabled={isSubmitting}
-                  className="flex-1 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 disabled:opacity-50 px-4 py-2 rounded-lg flex items-center justify-center space-x-2 transition-all text-white"
-                >
-                  {isSubmitting ? (
-                    <>
-                      <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
-                      <span>Saving...</span>
-                    </>
-                  ) : (
-                    <>
-                      <Save size={16} />
-                      <span>Save Service</span>
-                    </>
-                  )}
-                </button>
-                <button
-                  type="button"
-                  onClick={handleCancel}
-                  disabled={isSubmitting}
-                  className="flex-1 bg-gray-600 hover:bg-gray-700 disabled:opacity-50 px-4 py-2 rounded-lg transition-colors text-white"
-                >
-                  Cancel
-                </button>
-              </div>
-            </form>
+            </div>
           </div>
-        </>
-      )}
+
+          {/* Name */}
+          <div>
+            <label className="block text-sm font-medium text-gray-300 mb-2">
+              Name
+            </label>
+            <input
+              type="text"
+              value={formData.name}
+              onChange={(e) => handleInputChange("name", e.target.value)}
+              disabled={isSubmitting}
+              className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white"
+            />
+          </div>
+
+          {/* Description */}
+          <div>
+            <label className="block text-sm font-medium text-gray-300 mb-2">
+              Description
+            </label>
+            <textarea
+              value={formData.description}
+              onChange={(e) => handleInputChange("description", e.target.value)}
+              disabled={isSubmitting}
+              rows={4}
+              className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white"
+            />
+          </div>
+
+          {/* Actions */}
+          <div className="flex flex-col sm:flex-row sm:space-x-4 space-y-4 sm:space-y-0 pt-4">
+            <button
+              type="submit"
+              disabled={isSubmitting}
+              className="flex-1 flex items-center justify-center bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-lg text-white"
+            >
+              {isSubmitting ? (
+                "Updating..."
+              ) : (
+                <>
+                  <Save size={16} />
+                  <span className="ml-2">Update</span>
+                </>
+              )}
+            </button>
+            <button
+              type="button"
+              onClick={() => router.back()}
+              disabled={isSubmitting}
+              className="flex-1 bg-gray-600 hover:bg-gray-700 px-4 py-2 rounded-lg text-white"
+            >
+              Cancel
+            </button>
+          </div>
+        </form>
+      </div>
     </div>
   );
 }

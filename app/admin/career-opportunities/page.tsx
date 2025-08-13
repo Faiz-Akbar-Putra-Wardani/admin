@@ -93,12 +93,12 @@ export default function CareerOpportunitiesPage() {
   };
 
   return (
-    <div className="p-6">
+    <div className="p-4 md:p-6">
       <div className="max-w-6xl mx-auto">
-        <div className="flex items-center justify-between mb-6">
-          <div className="flex items-center space-x-3">
+        <div className="flex flex-col md:flex-row items-center justify-between mb-6 space-y-4 md:space-y-0">
+          <div className="flex items-center space-x-3 w-full md:w-auto">
             <Briefcase size={24} className="text-blue-500" />
-            <h1 className="text-2xl font-bold text-white">
+            <h1 className="text-xl md:text-2xl font-bold text-white">
               Career Opportunities
             </h1>
             <button
@@ -113,7 +113,7 @@ export default function CareerOpportunitiesPage() {
           <button
             onClick={handleAdd}
             disabled={loading}
-            className="bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 disabled:opacity-50 px-4 py-2 rounded-lg flex items-center space-x-2 transition-all"
+            className="bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 disabled:opacity-50 px-4 py-2 rounded-lg flex items-center space-x-2 transition-all w-full md:w-auto text-white justify-center"
           >
             <Plus size={16} />
             <span>Add Opportunity</span>
@@ -123,7 +123,7 @@ export default function CareerOpportunitiesPage() {
         {error && (
           <div className="mb-6 bg-red-900/50 border border-red-500 rounded-lg p-4 flex items-center space-x-3">
             <AlertCircle size={20} className="text-red-400" />
-            <span className="text-red-200">{error}</span>
+            <span className="text-red-200 text-sm">{error}</span>
           </div>
         )}
 
@@ -165,7 +165,7 @@ export default function CareerOpportunitiesPage() {
             {!searchTerm && (
               <button
                 onClick={handleAdd}
-                className="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-lg transition-colors"
+                className="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-lg transition-colors text-white"
               >
                 Add Opportunity
               </button>
@@ -179,7 +179,7 @@ export default function CareerOpportunitiesPage() {
                   key={career.id}
                   className="bg-gray-800 rounded-xl p-6 hover:bg-gray-750 transition-colors"
                 >
-                  <div className="w-24 h-24 mx-auto mb-4 bg-gray-700 rounded-lg overflow-hidden">
+                  <div className="w-24 h-24 mx-auto mb-4 bg-gray-700 rounded-lg overflow-hidden flex items-center justify-center">
                     {career.image_url ? (
                       <img
                         src={career.image_url}
@@ -187,9 +187,7 @@ export default function CareerOpportunitiesPage() {
                         className="w-full h-full object-cover"
                       />
                     ) : (
-                      <div className="w-full h-full flex items-center justify-center">
-                        <Briefcase size={24} className="text-gray-400" />
-                      </div>
+                      <Briefcase size={24} className="text-gray-400" />
                     )}
                   </div>
                   <div className="text-center mb-4">
@@ -204,7 +202,7 @@ export default function CareerOpportunitiesPage() {
                     <button
                       onClick={() => handleEdit(career)}
                       disabled={loading}
-                      className="flex-1 bg-blue-600 hover:bg-blue-700 disabled:opacity-50 px-3 py-2 rounded-lg flex items-center justify-center space-x-1 transition-colors text-sm"
+                      className="flex-1 bg-blue-600 hover:bg-blue-700 disabled:opacity-50 px-3 py-2 rounded-lg flex items-center justify-center space-x-1 transition-colors text-sm text-white"
                     >
                       <Edit size={14} />
                       <span>Edit</span>
@@ -212,7 +210,7 @@ export default function CareerOpportunitiesPage() {
                     <button
                       onClick={() => setConfirmDeleteItem(career)}
                       disabled={loading}
-                      className="flex-1 bg-red-600 hover:bg-red-700 disabled:opacity-50 px-3 py-2 rounded-lg flex items-center justify-center space-x-1 transition-colors text-sm"
+                      className="flex-1 bg-red-600 hover:bg-red-700 disabled:opacity-50 px-3 py-2 rounded-lg flex items-center justify-center space-x-1 transition-colors text-sm text-white"
                     >
                       <Trash2 size={14} />
                       <span>Delete</span>
@@ -237,7 +235,7 @@ export default function CareerOpportunitiesPage() {
       </div>
 
       {confirmDeleteItem && (
-        <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50">
+        <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4">
           <div className="bg-gray-900 border border-gray-700 p-6 rounded-xl shadow-xl w-full max-w-md">
             <h2 className="text-lg font-semibold text-white mb-2">
               Delete {confirmDeleteItem.title}?

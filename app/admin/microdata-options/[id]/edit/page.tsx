@@ -39,7 +39,7 @@ export default function MicrodataOptionEditPage() {
     const fetchMicrodataOption = async () => {
       setLoading(true);
       try {
-        const response = await api.get(`/microdata-options/${microdataOptionId}`);
+        const response = await api.get(`admin/microdata-options/${microdataOptionId}`);
         const microdataOptionData = response.data.data || response.data;
         setFormData({
           title: microdataOptionData.title || "",
@@ -98,10 +98,10 @@ export default function MicrodataOptionEditPage() {
       submitData.append("description", formData.description);
       submitData.append("_method", "PUT");
 
-      await api.post(`/microdata-options/${microdataOptionId}`, submitData);
+      await api.post(`admin/microdata-options/${microdataOptionId}`, submitData);
 
       toast.success("Microdata Option updated successfully!");
-      router.push("/admin/microdata-option");
+      router.push("/admin/microdata-options");
     } catch (error: any) {
       const message =
         error?.response?.data?.message || "An unexpected error occurred";
@@ -217,7 +217,7 @@ export default function MicrodataOptionEditPage() {
               ) : (
                 <>
                   <Save size={16} />
-                  <span>Save Microdata Option</span>
+                  <span>Save</span>
                 </>
               )}
             </button>

@@ -1,6 +1,6 @@
 "use client";
 import React, { useState, useEffect } from 'react';
-import { Plus, Edit, Trash2, Search, RefreshCw, AlertCircle, ArrowLeft, Info } from 'lucide-react';
+import { Plus, Edit, Trash2, Search, RefreshCw, AlertCircle, Info } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import api from '../../../lib/api';
 import toast from 'react-hot-toast';
@@ -24,7 +24,6 @@ export default function ProcessPage() {
   const fetchData = async () => {
     setLoading(true);
     setError(null);
-    
     try {
       const response = await api.get('/process');
       const processData = response.data.data || response.data;
@@ -54,17 +53,9 @@ export default function ProcessPage() {
     router.push('/admin/process/new');
   };
 
-  interface EditHandler {
-    (item: Process): void;
-  }
-
-  const handleEdit: EditHandler = (item) => {
+  const handleEdit = (item: Process) => {
     router.push(`/admin/process/${item.id}/edit`);
   };
-
-  interface DeleteHandler {
-    (item: Process): Promise<void>;
-  }
 
   const [confirmDeleteItem, setConfirmDeleteItem] = useState<Process | null>(null);
 
@@ -105,17 +96,31 @@ export default function ProcessPage() {
               <RefreshCw size={16} className={loading ? 'animate-spin' : ''} />
             </button>
           </div>
+
+          {/* Tombol Add - Desktop */}
           <button
             onClick={handleAdd}
             disabled={loading}
-            className="bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 disabled:opacity-50 px-4 py-2 rounded-lg flex items-center space-x-2 transition-all"
+            className="hidden md:flex bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 disabled:opacity-50 px-4 py-2 rounded-lg items-center space-x-2 transition-all"
           >
             <Plus size={16} />
             <span>Add Process</span>
           </button>
         </div>
 
-        {/* Error Message */}
+        {/* Tombol Add - Mobile */}
+        <div className="md:hidden mb-4">
+          <button
+            onClick={handleAdd}
+            disabled={loading}
+            className="w-full bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 disabled:opacity-50 px-4 py-2 rounded-lg flex items-center justify-center space-x-2 transition-all"
+          >
+            <Plus size={16} />
+            <span>Add Process</span>
+          </button>
+        </div>
+
+        {/* Error */}
         {error && (
           <div className="mb-6 bg-red-900/50 border border-red-500 rounded-lg p-4 flex items-center space-x-3">
             <AlertCircle size={20} className="text-red-400" />
@@ -138,7 +143,7 @@ export default function ProcessPage() {
           </div>
         </div>
 
-        {/* Loading State */}
+        {/* Loading */}
         {loading && (
           <div className="bg-gray-800 rounded-xl p-8 text-center">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto mb-4"></div>
@@ -154,10 +159,7 @@ export default function ProcessPage() {
               {searchTerm ? 'No processes found' : 'No processes yet'}
             </h3>
             <p className="text-gray-400 mb-4">
-              {searchTerm 
-                ? 'Try adjusting your search terms' 
-                : 'Start by adding your first process'
-              }
+              {searchTerm ? 'Try adjusting your search terms' : 'Start by adding your first process'}
             </p>
             {!searchTerm && (
               <button
@@ -174,8 +176,8 @@ export default function ProcessPage() {
               <div key={process.id} className="bg-gray-800 rounded-xl p-6 hover:bg-gray-750 transition-colors">
                 {/* Icon */}
                 <div className="w-20 h-20 mx-auto mb-4 bg-gray-700 rounded-full overflow-hidden flex items-center justify-center">
-                  {process.icon_url? (
-                    <img src={process.icon_url} alt={process.title} className="w-full h-full object-contain" />
+                  {process.icon_url ? (
+                    <img src={process.icon_url} alt={process.title} className="w-full h-full object-cover" />
                   ) : (
                     <Info size={24} className="text-gray-400" />
                   )}
@@ -222,34 +224,36 @@ export default function ProcessPage() {
             </div>
           </div>
         )}
-      </div>
-      {confirmDeleteItem && (
-        <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50">
-          <div className="bg-gray-900 border border-gray-700 p-6 rounded-xl shadow-xl w-full max-w-md">
-            <h2 className="text-lg font-semibold text-white mb-2">
-              Delete {confirmDeleteItem.title}?
-            </h2>
-            <p className="text-sm text-gray-400 mb-4">
-              Are you sure you want to delete this process? This action cannot be undone.
-            </p>
-            <div className="flex justify-end space-x-2">
-              <button
-                onClick={() => setConfirmDeleteItem(null)}
-                className="px-4 py-2 text-sm text-gray-300 hover:text-white hover:bg-gray-700 rounded-lg"
-              >
-                Cancel
-              </button>
-              <button
-                onClick={handleDeleteConfirm}
-                disabled={loading}
-                className="px-4 py-2 text-sm bg-red-600 hover:bg-red-700 text-white rounded-lg disabled:opacity-50"
-              >
-                {loading ? 'Deleting...' : 'Delete'}
-              </button>
+
+        {/* Delete Confirmation Modal */}
+        {confirmDeleteItem && (
+          <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50">
+            <div className="bg-gray-900 border border-gray-700 p-6 rounded-xl shadow-xl w-full max-w-md">
+              <h2 className="text-lg font-semibold text-white mb-2">
+                Delete {confirmDeleteItem.title}?
+              </h2>
+              <p className="text-sm text-gray-400 mb-4">
+                Are you sure you want to delete this process? This action cannot be undone.
+              </p>
+              <div className="flex justify-end space-x-2">
+                <button
+                  onClick={() => setConfirmDeleteItem(null)}
+                  className="px-4 py-2 text-sm text-gray-300 hover:text-white hover:bg-gray-700 rounded-lg"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={handleDeleteConfirm}
+                  disabled={loading}
+                  className="px-4 py-2 text-sm bg-red-600 hover:bg-red-700 text-white rounded-lg disabled:opacity-50"
+                >
+                  {loading ? 'Deleting...' : 'Delete'}
+                </button>
+              </div>
             </div>
           </div>
-        </div>
-      )}
+        )}
+      </div>
     </div>
   );
 }

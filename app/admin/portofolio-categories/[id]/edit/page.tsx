@@ -30,12 +30,10 @@ export default function PortofolioCategoryEditPage() {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
 
-  // Fetch category data
   useEffect(() => {
     const fetchCategory = async () => {
       setLoading(true);
       try {
-        // Endpoint yang diperbaiki
         const response = await api.get(`/admin/Portofolio-categories/${categoryId}`);
         const categoryData = response.data.data || response.data;
         setFormData({
@@ -79,7 +77,6 @@ export default function PortofolioCategoryEditPage() {
       submitData.append("name", formData.name);
       submitData.append("_method", "PUT");
 
-      // Endpoint yang diperbaiki
       await api.post(`/admin/Portofolio-categories/${categoryId}`, submitData);
 
       toast.success("Portofolio category updated successfully!");
@@ -99,19 +96,21 @@ export default function PortofolioCategoryEditPage() {
 
   if (loading) {
     return (
-      <div className="p-6 text-center text-gray-400">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto mb-4"></div>
-        <p>Loading category data...</p>
+      <div className="flex items-center justify-center min-h-screen p-4">
+        <div className="text-center text-gray-400">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto mb-4"></div>
+          <p>Loading category data...</p>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="p-6">
+    <div className="p-4 md:p-6 lg:p-8 max-w-2xl mx-auto">
       <div className="flex items-center justify-between mb-6">
-        <div className="flex items-center space-x-3">
-          <FolderOpen size={24} className="text-blue-500" />
-          <h1 className="text-2xl font-bold text-white">Edit Portofolio Category</h1>
+        <div className="flex items-center space-x-2 md:space-x-3">
+          <FolderOpen size={20} className="text-blue-500 md:size-24" />
+          <h1 className="text-xl md:text-2xl font-bold text-white">Edit Portofolio Category</h1>
         </div>
         <button
           onClick={handleCancel}
@@ -124,14 +123,14 @@ export default function PortofolioCategoryEditPage() {
       </div>
 
       {error && (
-        <div className="mb-6 bg-red-900/50 border border-red-500 rounded-lg p-4 flex items-center space-x-3">
+        <div className="mb-4 md:mb-6 bg-red-900/50 border border-red-500 rounded-lg p-3 md:p-4 flex items-center space-x-3">
           <AlertCircle size={20} className="text-red-400" />
-          <span className="text-red-200">{error}</span>
+          <span className="text-red-200 text-sm">{error}</span>
         </div>
       )}
 
-      <div className="bg-gray-800 rounded-xl p-6">
-        <form onSubmit={handleSubmit} className="space-y-6">
+      <div className="bg-gray-800 rounded-xl p-4 md:p-6">
+        <form onSubmit={handleSubmit} className="space-y-4 md:space-y-6">
           <div>
             <label className="block text-sm font-medium text-gray-300 mb-2">
               Category Name *
@@ -142,15 +141,15 @@ export default function PortofolioCategoryEditPage() {
               onChange={(e) => handleInputChange(e.target.value)}
               placeholder="Enter category name"
               disabled={isSubmitting}
-              className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-white disabled:opacity-50"
+              className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-white disabled:opacity-50 text-sm md:text-base"
             />
           </div>
 
-          <div className="flex space-x-4 pt-4">
+          <div className="flex flex-col md:flex-row space-y-2 md:space-y-0 md:space-x-4 pt-2 md:pt-4">
             <button
               type="submit"
               disabled={isSubmitting}
-              className="flex-1 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 disabled:opacity-50 px-4 py-2 rounded-lg flex items-center justify-center space-x-2 transition-all text-white"
+              className="flex-1 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 disabled:opacity-50 px-4 py-2 rounded-lg flex items-center justify-center space-x-2 transition-all text-white text-sm"
             >
               {isSubmitting ? (
                 <>
@@ -168,7 +167,7 @@ export default function PortofolioCategoryEditPage() {
               type="button"
               onClick={handleCancel}
               disabled={isSubmitting}
-              className="flex-1 bg-gray-600 hover:bg-gray-700 disabled:opacity-50 px-4 py-2 rounded-lg transition-colors text-white"
+              className="flex-1 bg-gray-600 hover:bg-gray-700 disabled:opacity-50 px-4 py-2 rounded-lg transition-colors text-white text-sm"
             >
               Cancel
             </button>
