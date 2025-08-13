@@ -1,4 +1,3 @@
-// app/admin/microdata-option/page.tsx
 "use client";
 import React, { useState, useEffect } from "react";
 import { Plus, Edit, Trash2, Search, RefreshCw, AlertCircle, Info } from "lucide-react";
@@ -13,25 +12,33 @@ type MicrodataOptionItem = {
   description: string;
 };
 
-export default function MicrodataOptionPage() {
+export default function microdataOptionPage() {
   const router = useRouter();
   const [searchTerm, setSearchTerm] = useState("");
   const [data, setData] = useState<MicrodataOptionItem[]>([]);
-  const [filteredData, setFilteredData] = useState<MicrodataOptionItem[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [confirmDeleteItem, setConfirmDeleteItem] = useState<MicrodataOptionItem | null>(null);
 
   const fetchData = async () => {
     setLoading(true);
     setError(null);
     try {
       const response = await api.get("/microdata-options");
+      // Menangani struktur data respons yang mungkin bervariasi
       const microdataOptionData = response.data.data || response.data;
-      setData(microdataOptionData);
-    } catch (error) {
+      if (Array.isArray(microdataOptionData)) {
+        setData(microdataOptionData);
+      } else {
+        // Jika data bukan array, mungkin respons kosong atau error
+        setData([]);
+      }
+    } catch (error: any) {
       console.error("Error fetching microdata options:", error);
-      setError("Failed to fetch microdata options data");
+      const errorMessage = error?.response?.data?.message || "Failed to fetch microdata options data.";
+      setError(errorMessage);
       setData([]);
+      toast.error(errorMessage);
     } finally {
       setLoading(false);
     }
@@ -41,38 +48,32 @@ export default function MicrodataOptionPage() {
     fetchData();
   }, []);
 
-  useEffect(() => {
-    const filtered = data.filter(
-      (item) =>
-        item.title?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        item.name_title?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        item.description?.toLowerCase().includes(searchTerm.toLowerCase())
-    );
-    setFilteredData(filtered);
-  }, [data, searchTerm]);
+  const filteredData = data.filter(
+    (item) =>
+      item.title?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      item.name_title?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      item.description?.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   const handleAdd = () => {
-    router.push("/admin/microdata-option/new");
+    router.push("/admin/microdata-options/new");
   };
 
   const handleEdit = (item: MicrodataOptionItem) => {
-    router.push(`/admin/microdata-option/${item.id}/edit`);
+    router.push(`/admin/microdata-options/${item.id}/edit`);
   };
-
-  const [confirmDeleteItem, setConfirmDeleteItem] = useState<MicrodataOptionItem | null>(null);
 
   const handleDeleteConfirm = async () => {
     if (!confirmDeleteItem) return;
     setLoading(true);
     try {
-      await api.delete(`/admin/microdata-options/${confirmDeleteItem.id}`);
-      setData((prev) =>
-        prev.filter((option) => option.id !== confirmDeleteItem.id)
-      );
+      await api.delete(`admin/microdata-options/${confirmDeleteItem.id}`);
+      setData((prev) => prev.filter((option) => option.id !== confirmDeleteItem.id));
       toast.success(`${confirmDeleteItem.title} deleted successfully.`);
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error deleting microdata option:", error);
-      toast.error("Failed to delete microdata option.");
+      const errorMessage = error?.response?.data?.message || "Failed to delete microdata option.";
+      toast.error(errorMessage);
     } finally {
       setLoading(false);
       setConfirmDeleteItem(null);
@@ -84,41 +85,36 @@ export default function MicrodataOptionPage() {
   };
 
   return (
-    <div className="p-6">
+    <div className="p-4 md:p-6">
       <div className="max-w-6xl mx-auto">
-        {/* Header */}
-        <div className="flex items-center justify-between mb-6">
+        <div className="flex flex-col md:flex-row items-start md:items-center justify-between mb-6 space-y-4 md:space-y-0">
           <div className="flex items-center space-x-3">
             <Info size={24} className="text-blue-500" />
-            <h1 className="text-2xl font-bold">Microdata Options Management</h1>
+            <h1 className="text-2xl font-bold text-white">Microdata Options</h1>
             <button
               onClick={handleRefresh}
               disabled={loading}
               className="p-2 hover:bg-gray-800 rounded-lg transition-colors disabled:opacity-50"
               title="Refresh data"
             >
-              <RefreshCw size={16} className={loading ? "animate-spin" : ""} />
+              <RefreshCw size={16} className={loading ? "animate-spin text-white" : "text-gray-400"} />
             </button>
           </div>
           <button
             onClick={handleAdd}
             disabled={loading}
-            className="bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 disabled:opacity-50 px-4 py-2 rounded-lg flex items-center space-x-2 transition-all"
+            className="w-full md:w-auto bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 disabled:opacity-50 px-4 py-2 rounded-lg flex items-center justify-center space-x-2 transition-all text-white"
           >
             <Plus size={16} />
-            <span>Add Microdata Option</span>
+            <span className="md:inline">Add Microdata Option</span>
           </button>
         </div>
-
-        {/* Error Message */}
         {error && (
           <div className="mb-6 bg-red-900/50 border border-red-500 rounded-lg p-4 flex items-center space-x-3">
             <AlertCircle size={20} className="text-red-400" />
             <span className="text-red-200">{error}</span>
           </div>
         )}
-
-        {/* Search */}
         <div className="mb-6">
           <div className="relative">
             <Search
@@ -135,16 +131,12 @@ export default function MicrodataOptionPage() {
             />
           </div>
         </div>
-
-        {/* Loading State */}
         {loading && (
           <div className="bg-gray-800 rounded-xl p-8 text-center">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto mb-4"></div>
             <p className="text-gray-400">Loading microdata options...</p>
           </div>
         )}
-
-        {/* Content */}
         {!loading && filteredData.length === 0 ? (
           <div className="bg-gray-800 rounded-xl p-8 text-center">
             <Info size={48} className="mx-auto text-gray-600 mb-4" />
@@ -159,7 +151,7 @@ export default function MicrodataOptionPage() {
             {!searchTerm && (
               <button
                 onClick={handleAdd}
-                className="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-lg transition-colors"
+                className="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-lg transition-colors text-white"
               >
                 Add Microdata Option
               </button>
@@ -171,10 +163,9 @@ export default function MicrodataOptionPage() {
               {filteredData.map((option) => (
                 <div
                   key={option.id}
-                  className="bg-gray-800 rounded-xl p-6 hover:bg-gray-750 transition-colors"
+                  className="bg-gray-800 rounded-xl p-6 hover:bg-gray-700 transition-colors"
                 >
-                  {/* Info */}
-                  <div className="text-center mb-4">
+                  <div className="mb-4">
                     <h3 className="text-lg font-semibold text-white mb-1">
                       {option.title}
                     </h3>
@@ -183,13 +174,11 @@ export default function MicrodataOptionPage() {
                       {option.description}
                     </p>
                   </div>
-
-                  {/* Actions */}
                   <div className="flex space-x-2">
                     <button
                       onClick={() => handleEdit(option)}
                       disabled={loading}
-                      className="flex-1 bg-blue-600 hover:bg-blue-700 disabled:opacity-50 px-3 py-2 rounded-lg flex items-center justify-center space-x-1 transition-colors text-sm"
+                      className="flex-1 bg-blue-600 hover:bg-blue-700 disabled:opacity-50 px-3 py-2 rounded-lg flex items-center justify-center space-x-1 transition-colors text-sm text-white"
                     >
                       <Edit size={14} />
                       <span>Edit</span>
@@ -197,7 +186,7 @@ export default function MicrodataOptionPage() {
                     <button
                       onClick={() => setConfirmDeleteItem(option)}
                       disabled={loading}
-                      className="flex-1 bg-red-600 hover:bg-red-700 disabled:opacity-50 px-3 py-2 rounded-lg flex items-center justify-center space-x-1 transition-colors text-sm"
+                      className="flex-1 bg-red-600 hover:bg-red-700 disabled:opacity-50 px-3 py-2 rounded-lg flex items-center justify-center space-x-1 transition-colors text-sm text-white"
                     >
                       <Trash2 size={14} />
                       <span>Delete</span>
@@ -208,11 +197,9 @@ export default function MicrodataOptionPage() {
             </div>
           )
         )}
-
-        {/* Stats */}
         {!loading && (
           <div className="mt-8 bg-gray-800 rounded-xl p-4">
-            <div className="flex items-center justify-between text-sm text-gray-400">
+            <div className="flex items-center justify-between text-sm text-gray-400 flex-col space-y-2 md:flex-row md:space-y-0">
               <span>Total Options: {data.length}</span>
               {searchTerm && (
                 <span>Showing: {filteredData.length} results</span>
@@ -222,7 +209,7 @@ export default function MicrodataOptionPage() {
         )}
       </div>
       {confirmDeleteItem && (
-        <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50">
+        <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4">
           <div className="bg-gray-900 border border-gray-700 p-6 rounded-xl shadow-xl w-full max-w-md">
             <h2 className="text-lg font-semibold text-white mb-2">
               Delete {confirmDeleteItem.title}?
@@ -230,7 +217,7 @@ export default function MicrodataOptionPage() {
             <p className="text-sm text-gray-400 mb-4">
               Are you sure you want to delete this microdata option? This action cannot be undone.
             </p>
-            <div className="flex justify-end space-x-2">
+            <div className="flex flex-col-reverse sm:flex-row justify-end space-y-2 sm:space-y-0 sm:space-x-2">
               <button
                 onClick={() => setConfirmDeleteItem(null)}
                 className="px-4 py-2 text-sm text-gray-300 hover:text-white hover:bg-gray-700 rounded-lg"
