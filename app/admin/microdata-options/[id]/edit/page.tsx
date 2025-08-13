@@ -217,7 +217,7 @@ export default function MicrodataOptionEditPage() {
               ) : (
                 <>
                   <Save size={16} />
-                  <span>Save Microdata Option</span>
+                  <span>Save</span>
                 </>
               )}
             </button>
