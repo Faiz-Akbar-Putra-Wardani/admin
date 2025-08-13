@@ -65,18 +65,34 @@ export default function BusinessLineEditPage() {
     setIconFile(file);
     const reader = new FileReader();
     reader.onload = (ev) => {
-      if (typeof ev.target?.result === "string") setIconPreview(ev.target.result);
+      if (typeof ev.target?.result === "string")
+        setIconPreview(ev.target.result);
     };
     reader.readAsDataURL(file);
     setError(null);
   };
 
   const validate = () => {
-    if (!businessLine?.title.trim()) { setError("Title is required"); return false; }
-    if (!businessLine?.title_business.trim()) { setError("Title Business is required"); return false; }
-    if (!businessLine?.description.trim()) { setError("Description is required"); return false; }
-    if (mode === "upload" && !iconFile && !iconPreview) { setError("Please upload an icon or keep existing"); return false; }
-    if (mode === "class" && !businessLine?.icon?.trim()) { setError("Icon class is required"); return false; }
+    if (!businessLine?.title.trim()) {
+      setError("Title is required");
+      return false;
+    }
+    if (!businessLine?.title_business.trim()) {
+      setError("Title Business is required");
+      return false;
+    }
+    if (!businessLine?.description.trim()) {
+      setError("Description is required");
+      return false;
+    }
+    if (mode === "upload" && !iconFile && !iconPreview) {
+      setError("Please upload an icon or keep existing");
+      return false;
+    }
+    if (mode === "class" && !businessLine?.icon?.trim()) {
+      setError("Icon class is required");
+      return false;
+    }
     return true;
   };
 
@@ -103,9 +119,11 @@ export default function BusinessLineEditPage() {
       await api.post(`/admin/business-lines/${id}`, fd);
       toast.success("Business line updated");
       router.push("/admin/business-lines");
+      router.push("/admin/business-line");
     } catch (err: any) {
       console.error(err);
-      const message = err?.response?.data?.message || "An unexpected error occurred";
+      const message =
+        err?.response?.data?.message || "An unexpected error occurred";
       setError(message);
     } finally {
       setIsSubmitting(false);
@@ -124,51 +142,64 @@ export default function BusinessLineEditPage() {
   }
 
   return (
-    <div className="p-6">
+    <div className="p-4 sm:p-6">
+      {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center space-x-3">
-          <button onClick={() => router.back()} className="p-2 hover:bg-gray-800 rounded-lg">
+          <button
+            onClick={() => router.back()}
+            className="p-2 hover:bg-gray-800 rounded-lg"
+          >
             <ArrowLeft size={20} />
           </button>
-          <h1 className="text-2xl font-bold text-white">Edit Business Line</h1>
+          <h1 className="text-2xl font-bold text-white">
+            Edit Business Line
+          </h1>
         </div>
       </div>
 
-      {error && <div className="mb-6 bg-red-900/50 border border-red-500 p-4 rounded text-red-200">{error}</div>}
+      {/* Error */}
+      {error && (
+        <div className="mb-6 bg-red-900/50 border border-red-500 p-4 rounded text-red-200">
+          {error}
+        </div>
+      )}
 
+      {/* Form */}
       {businessLine && (
-        <div className="bg-gray-800 rounded-xl p-6">
+        <div className="bg-gray-800 rounded-xl p-4 sm:p-6">
           <form onSubmit={handleSubmit} className="space-y-6">
-            <div>
-              <label className="text-sm text-gray-300 block mb-2">Mode</label>
-              <div className="flex items-center space-x-4">
-                <label className="flex items-center space-x-2">
-                  <input type="radio" checked={mode === "upload"} onChange={() => setMode("upload")} />
-                  <span className="ml-1 text-sm text-gray-200">Upload image</span>
-                </label>
-                <label className="flex items-center space-x-2">
-                  <input type="radio" checked={mode === "class"} onChange={() => setMode("class")} />
-                  <span className="ml-1 text-sm text-gray-200">Icon class</span>
-                </label>
-              </div>
-            </div>
-
+            {/* Icon Upload - Centered on Mobile */}
             {mode === "upload" && (
               <div>
-                <label className="block text-sm font-medium text-gray-300 mb-2">Icon image</label>
-                <div className="flex items-center space-x-4">
+                <label className="block text-sm font-medium text-gray-300 mb-2">
+                  Icon image
+                </label>
+                <div className="flex flex-col items-center sm:flex-row sm:items-center sm:space-x-4">
                   <div className="w-24 h-24 bg-gray-700 rounded-lg overflow-hidden flex items-center justify-center">
                     {iconPreview ? (
-                      <img src={iconPreview} className="w-full h-full object-cover" alt="preview" />
+                      <img
+                        src={iconPreview}
+                        className="w-full h-full object-cover"
+                        alt="preview"
+                      />
                     ) : (
                       <Upload size={24} className="text-gray-400" />
                     )}
                   </div>
-                  <div>
-                    <input id="icon-file-edit" type="file" accept="image/*" onChange={handleIconChange} className="hidden" />
+                  <div className="mt-3 sm:mt-0 flex flex-col items-center sm:items-start">
+                    <input
+                      id="icon-file-edit"
+                      type="file"
+                      accept="image/*"
+                      onChange={handleIconChange}
+                      className="hidden"
+                    />
                     <label
                       htmlFor="icon-file-edit"
-                      className={`bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-lg cursor-pointer text-white ${isSubmitting ? "opacity-50" : ""}`}
+                      className={`bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-lg cursor-pointer text-white ${
+                        isSubmitting ? "opacity-50" : ""
+                      }`}
                     >
                       Choose Icon
                     </label>
@@ -178,52 +209,92 @@ export default function BusinessLineEditPage() {
               </div>
             )}
 
+            {/* Icon Class */}
             {mode === "class" && (
               <div>
-                <label className="block text-sm font-medium text-gray-300 mb-2">Icon class</label>
+                <label className="block text-sm font-medium text-gray-300 mb-2">
+                  Icon class
+                </label>
                 <input
                   value={businessLine.icon || ""}
-                  onChange={(e) => setBusinessLine({ ...businessLine, icon: e.target.value })}
+                  onChange={(e) =>
+                    setBusinessLine({
+                      ...businessLine,
+                      icon: e.target.value,
+                    })
+                  }
                   className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white"
                 />
               </div>
             )}
 
+            {/* Title */}
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">Title</label>
+              <label className="block text-sm font-medium text-gray-300 mb-2">
+                Title
+              </label>
               <input
                 value={businessLine.title}
-                onChange={(e) => setBusinessLine({ ...businessLine, title: e.target.value })}
+                onChange={(e) =>
+                  setBusinessLine({
+                    ...businessLine,
+                    title: e.target.value,
+                  })
+                }
                 className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white"
               />
             </div>
 
+            {/* Title Business */}
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">Title Business</label>
+              <label className="block text-sm font-medium text-gray-300 mb-2">
+                Title Business
+              </label>
               <input
                 value={businessLine.title_business}
-                onChange={(e) => setBusinessLine({ ...businessLine, title_business: e.target.value })}
+                onChange={(e) =>
+                  setBusinessLine({
+                    ...businessLine,
+                    title_business: e.target.value,
+                  })
+                }
                 className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white"
               />
             </div>
 
+            {/* Description */}
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">Description</label>
+              <label className="block text-sm font-medium text-gray-300 mb-2">
+                Description
+              </label>
               <textarea
                 value={businessLine.description}
-                onChange={(e) => setBusinessLine({ ...businessLine, description: e.target.value })}
+                onChange={(e) =>
+                  setBusinessLine({
+                    ...businessLine,
+                    description: e.target.value,
+                  })
+                }
                 rows={4}
                 className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white"
               />
             </div>
 
-            <div className="flex space-x-4 pt-4">
+            {/* Actions */}
+            <div className="flex flex-col sm:flex-row sm:space-x-4 space-y-4 sm:space-y-0 pt-4">
               <button
                 type="submit"
                 disabled={isSubmitting}
                 className="flex-1 flex items-center justify-center bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-lg text-white"
               >
-                {isSubmitting ? "Updating..." : (<><Save size={16} /><span className="ml-2">Update</span></>)}
+                {isSubmitting ? (
+                  "Updating..."
+                ) : (
+                  <>
+                    <Save size={16} />
+                    <span className="ml-2">Update</span>
+                  </>
+                )}
               </button>
               <button
                 type="button"
