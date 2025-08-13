@@ -1,6 +1,23 @@
 "use client";
 import React from 'react';
-import { Users, Code, Briefcase, Building, X, Menu, Home, FileText } from 'lucide-react';
+import {  Home,
+  FileText,
+  Building,
+  Users,
+  Code,
+  Briefcase,
+  Layers,
+  FolderOpen,
+  ClipboardList,
+  Settings,
+  Network,
+  ClipboardCheck,
+  Users2,
+  Globe,
+  Target,
+  Workflow,
+  Handshake, 
+X} from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
@@ -12,102 +29,104 @@ interface SidebarProps {
 export default function Sidebar({ sidebarOpen, setSidebarOpen }: SidebarProps) {
   const pathname = usePathname();
 
-  const menuItems = [
-    {
-      title: 'Dashboard',
-      icon: Home,
-      href: '/admin',
-      active: pathname === '/admin'
-    },
-     {
-      title: 'About Us',
-      icon: FileText,
-      href: '/admin/about',
-      active: pathname.startsWith('/admin/about')
-    },
-    {
-      title: 'Business Line',
-      icon: FileText,
-      href: '/admin/business-line',
-      active: pathname.startsWith('/admin/business-line')
-    },
-    {
-      title: 'Career',
-      icon: Building,
-      href: '/admin/career',
-      active: pathname === '/admin/career' || pathname.startsWith('/admin/career/')
-    },
-    {
-      title: 'Career Opportunities',
-      icon: FileText,
-      href: '/admin/career-opportunities',
-      active: pathname === '/admin/career-opportunities' || pathname.startsWith('/admin/career-opportunities/')
-    },
-    {
-      title: 'Clients',
-      icon: FileText,
-      href: '/admin/client',
-      active: pathname.startsWith('/admin/client')
-    },
-    {
-      title: 'Microdata Options',
-      icon: FileText,
-      href: '/admin/microdata-options',
-      active: pathname.startsWith('/admin/microdata-options')
-    },
-    {
-      title : 'Partnerships',
-      icon: FileText,
-      href: '/admin/partnerships',
-      active: pathname.startsWith('/admin/partnerships')
-    },
-    {
-      title: 'Portofolio Categories',
-      icon: FileText,
-      href: '/admin/portofolio-categories',
-      active: pathname.startsWith('/admin/portofolio-categories')
-    },
-    {
-      title: 'Position',
-      icon: FileText,
-      href: '/admin/position',
-      active: pathname.startsWith('/admin/position')
-    },
-    {
-      title: 'Process',
-      icon: FileText,
-      href: '/admin/process',
-      active: pathname.startsWith('/admin/process')
-    },
-
-    {
-      title: 'Team',
-      icon: Users,
-      href: '/admin/team',
-      active: pathname.startsWith('/admin/team')
-    },
-    {
-      title: 'Technology',
-      icon: Code,
-      href: '/admin/technology',
-      active: pathname.startsWith('/admin/technology')
-    },
-    {
-      title: 'Service',
-      icon: Briefcase,
-      href: '/admin/service',
-      active: pathname === '/admin/service' || pathname.startsWith('/admin/service/')
-    },
-    {
-      title: 'Service Landing Page',
-      icon: Briefcase,
-      href: '/admin/service-landingpage',
-      active: pathname === '/admin/service-landingpage' || pathname.startsWith('/admin/service-landingpage/')
-    },
-    
-    
-
-  ];
+const menuItems = [
+  {
+    title: "Dashboard",
+    icon: Home,
+    href: "/admin",
+    active: pathname === "/admin",
+  },
+  {
+    title: "About Us",
+    icon: FileText, 
+    href: "/admin/about",
+    active: pathname.startsWith("/admin/about"),
+  },
+  {
+    title: "Business Line",
+    icon: Layers,
+    href: "/admin/business-line",
+    active: pathname.startsWith("/admin/business-line"),
+  },
+  {
+    title: "Career",
+    icon: Building,
+    href: "/admin/career",
+    active:
+      pathname === "/admin/career" || pathname.startsWith("/admin/career/"),
+  },
+  {
+    title: "Career Opportunities",
+    icon: ClipboardList,
+    href: "/admin/career-opportunities",
+    active:
+      pathname === "/admin/career-opportunities" ||
+      pathname.startsWith("/admin/career-opportunities/"),
+  },
+  {
+    title: "Clients",
+    icon: Users2,
+    href: "/admin/client",
+    active: pathname.startsWith("/admin/client"),
+  },
+  {
+    title: "Microdata Options",
+    icon: Settings,
+    href: "/admin/microdata-options",
+    active: pathname.startsWith("/admin/microdata-options"),
+  },
+  {
+    title: "Partnerships",
+    icon: Handshake,
+    href: "/admin/partnerships",
+    active: pathname.startsWith("/admin/partnerships"),
+  },
+  {
+    title: "Portofolio Categories",
+    icon: FolderOpen,
+    href: "/admin/portofolio-categories",
+    active: pathname.startsWith("/admin/portofolio-categories"),
+  },
+  {
+    title: "Position",
+    icon: Target,
+    href: "/admin/position",
+    active: pathname.startsWith("/admin/position"),
+  },
+  {
+    title: "Process",
+    icon: Workflow,
+    href: "/admin/process",
+    active: pathname.startsWith("/admin/process"),
+  },
+  {
+    title: "Team",
+    icon: Users,
+    href: "/admin/team",
+    active: pathname.startsWith("/admin/team"),
+  },
+  {
+    title: "Technology",
+    icon: Code,
+    href: "/admin/technology",
+    active: pathname.startsWith("/admin/technology"),
+  },
+  {
+    title: "Service",
+    icon: Briefcase,
+    href: "/admin/service",
+    active:
+      pathname === "/admin/service" || pathname.startsWith("/admin/service/"),
+  },
+  {
+    title: "Service Landing Page",
+    icon: Globe,
+    href: "/admin/service-landingpage",
+    active:
+      pathname === "/admin/service-landingpage" ||
+      pathname.startsWith("/admin/service-landingpage/"),
+  },
+];
 
   return (
     <>
