@@ -278,7 +278,7 @@ export default function PositionPage() {
                 onClick={() => setConfirmDeleteItem(null)}
                 className="px-4 py-2 text-sm text-gray-300 hover:text-white hover:bg-gray-700 rounded-lg"
               >
-                Cancel
+                Canceel
               </button>
               <button
                 onClick={handleDeleteConfirm}
