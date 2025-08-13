@@ -31,7 +31,7 @@ export default function ProcessEditPage() {
   useEffect(() => {
     const fetchProcess = async () => {
       try {
-        const response = await api.get(`/process/${processId}`);
+        const response = await api.get(`/admin/process/${processId}`);
         const processData = response.data.data || response.data;
 
         setFormData({
@@ -41,8 +41,15 @@ export default function ProcessEditPage() {
           description_title: processData.description_title || ''
         });
 
-        if (processData.icon) {
-          setImagePreview(processData.icon);
+        // Check for different possible icon properties
+        if (processData.icon_url) {
+          setImagePreview(processData.icon_url);
+        } else if (processData.icon) {
+          // If icon is a relative path, construct full URL
+          const iconUrl = processData.icon.startsWith('http') 
+            ? processData.icon 
+            : `${process.env.NEXT_PUBLIC_API_URL || ''}/storage/${processData.icon}`;
+          setImagePreview(iconUrl);
         }
       } catch (error) {
         console.error('Error fetching process:', error);
@@ -122,8 +129,12 @@ export default function ProcessEditPage() {
         submitData.append('icon', formData.icon);
       }
 
-      submitData.append('_method', 'PUT');
-      await api.post(`/admin/processes/${processId}`, submitData);
+      // Use PUT method properly
+      await api.put(`/admin/process/${processId}`, submitData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
 
       toast.success('Process updated successfully!');
       setTimeout(() => {
@@ -148,78 +159,87 @@ export default function ProcessEditPage() {
 
   if (loading) {
     return (
-      <div className="p-6">
-        <div className="max-w-2xl mx-auto">
-          <div className="bg-gray-800 rounded-xl p-8 text-center">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto mb-4"></div>
-            <p className="text-gray-400">Loading process data...</p>
-          </div>
+      <div className="p-4 sm:p-6">
+        <div className="bg-gray-800 rounded-xl p-8 text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto mb-4"></div>
+          <p className="text-gray-400">Loading...</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="p-6">
+    <div className="p-4 sm:p-6">
       {/* Header */}
-      <div className="flex items-center mb-6">
-        <button
-          onClick={handleCancel}
-          disabled={isSubmitting}
-          className="mr-4 p-2 hover:bg-gray-800 rounded-lg transition-colors disabled:opacity-50"
-        >
-          <ArrowLeft size={20} />
-        </button>
-        <h1 className="text-2xl font-bold">Edit Process</h1>
+      <div className="flex items-center justify-between mb-6">
+        <div className="flex items-center space-x-3">
+          <button
+            onClick={() => router.back()}
+            className="p-2 hover:bg-gray-800 rounded-lg"
+          >
+            <ArrowLeft size={20} />
+          </button>
+          <h1 className="text-2xl font-bold text-white">
+            Edit Process
+          </h1>
+        </div>
       </div>
 
+      {/* Error */}
       {error && (
-        <div className="mb-6 bg-red-900/50 border border-red-500 rounded-lg p-4 flex items-center space-x-3">
-          <AlertCircle size={20} className="text-red-400" />
-          <span className="text-red-200">{error}</span>
+        <div className="mb-6 bg-red-900/50 border border-red-500 p-4 rounded text-red-200">
+          {error}
         </div>
       )}
 
-      <div className="bg-gray-800 rounded-xl p-6">
+      {/* Form */}
+      <div className="bg-gray-800 rounded-xl p-4 sm:p-6">
         <form onSubmit={handleSubmit} className="space-y-6">
-          {/* Icon */}
+          {/* Icon Upload - Centered on Mobile */}
           <div>
-            <label className="block text-sm font-medium text-gray-300 mb-2">Icon</label>
-            <div className="flex items-center space-x-4">
-              <div className="w-24 h-24 bg-gray-700 rounded-lg flex items-center justify-center overflow-hidden">
+            <label className="block text-sm font-medium text-gray-300 mb-2">
+              Icon
+            </label>
+            <div className="flex flex-col items-center sm:flex-row sm:items-center sm:space-x-4">
+              <div className="w-24 h-24 bg-gray-700 rounded-lg overflow-hidden flex items-center justify-center">
                 {imagePreview ? (
-                  <img src={imagePreview} alt="Preview" className="w-full h-full object-contain" />
+                  <img
+                    src={imagePreview}
+                    className="w-full h-full object-cover"
+                    alt="preview"
+                  />
                 ) : (
                   <Upload size={24} className="text-gray-400" />
                 )}
               </div>
-              <div>
+              <div className="mt-3 sm:mt-0 flex flex-col items-center sm:items-start">
                 <input
+                  id="icon-file-edit"
                   type="file"
                   accept="image/*"
                   onChange={handleImageChange}
                   disabled={isSubmitting}
                   className="hidden"
-                  id="icon-upload"
                 />
                 <label
-                  htmlFor="icon-upload"
-                  className={`bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-lg cursor-pointer transition-colors inline-block ${
-                    isSubmitting ? 'opacity-50 cursor-not-allowed' : ''
+                  htmlFor="icon-file-edit"
+                  className={`bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-lg cursor-pointer text-white ${
+                    isSubmitting ? "opacity-50" : ""
                   }`}
                 >
                   Change Icon
                 </label>
-                <p className="text-sm text-gray-400 mt-1">Upload a new icon (max 5MB)</p>
+                <p className="text-sm text-gray-400 mt-1">Max 5MB</p>
               </div>
             </div>
           </div>
 
           {/* Title */}
           <div>
-            <label className="block text-sm font-medium text-gray-300 mb-2">Title *</label>
+            <label className="block text-sm font-medium text-gray-300 mb-2">
+              Title
+            </label>
             <input
-              type="text"
               value={formData.title}
               onChange={(e) => handleInputChange('title', e.target.value)}
               disabled={isSubmitting}
@@ -229,38 +249,37 @@ export default function ProcessEditPage() {
 
           {/* Description */}
           <div>
-            <label className="block text-sm font-medium text-gray-300 mb-2">Description *</label>
+            <label className="block text-sm font-medium text-gray-300 mb-2">
+              Description
+            </label>
             <textarea
               value={formData.description_title}
               onChange={(e) => handleInputChange('description_title', e.target.value)}
               disabled={isSubmitting}
-              className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white"
               rows={4}
+              className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white"
             />
           </div>
 
           {/* Actions */}
-          <div className="flex space-x-4 pt-4">
+          <div className="flex flex-col sm:flex-row sm:space-x-4 space-y-4 sm:space-y-0 pt-4">
             <button
               type="submit"
               disabled={isSubmitting}
-              className="flex-1 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 disabled:opacity-50 px-4 py-2 rounded-lg flex items-center justify-center space-x-2 text-white"
+              className="flex-1 flex items-center justify-center bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-lg text-white"
             >
               {isSubmitting ? (
-                <>
-                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white" />
-                  <span>Updating...</span>
-                </>
+                "Updating..."
               ) : (
                 <>
                   <Save size={16} />
-                  <span>Update Process</span>
+                  <span className="ml-2">Update</span>
                 </>
               )}
             </button>
             <button
               type="button"
-              onClick={handleCancel}
+              onClick={() => router.back()}
               disabled={isSubmitting}
               className="flex-1 bg-gray-600 hover:bg-gray-700 px-4 py-2 rounded-lg text-white"
             >

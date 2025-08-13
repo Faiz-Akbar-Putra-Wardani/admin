@@ -118,10 +118,24 @@ export default function ServicePage() {
               <RefreshCw size={16} className={loading ? "animate-spin" : ""} />
             </button>
           </div>
+
+          {/* Tombol Add - Desktop */}
           <button
             onClick={handleAdd}
             disabled={loading}
-            className="bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 disabled:opacity-50 px-4 py-2 rounded-lg flex items-center space-x-2 transition-all"
+            className="hidden md:flex bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 disabled:opacity-50 px-4 py-2 rounded-lg items-center space-x-2 transition-all"
+          >
+            <Plus size={16} />
+            <span>Add Service</span>
+          </button>
+        </div>
+
+        {/* Tombol Add - Mobile */}
+        <div className="md:hidden mb-4">
+          <button
+            onClick={handleAdd}
+            disabled={loading}
+            className="w-full bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 disabled:opacity-50 px-4 py-2 rounded-lg flex items-center justify-center space-x-2 transition-all"
           >
             <Plus size={16} />
             <span>Add Service</span>
@@ -177,7 +191,7 @@ export default function ServicePage() {
             {!searchTerm && (
               <button
                 onClick={handleAdd}
-                className="bg-blue-600 hover_DM: bg-blue-700 px-4 py-2 rounded-lg transition-colors"
+                className="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-lg transition-colors"
               >
                 Add Service
               </button>
