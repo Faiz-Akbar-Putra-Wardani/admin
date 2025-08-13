@@ -175,7 +175,7 @@ export default function MicrodataOptionCreatePage() {
               ) : (
                 <>
                   <Save size={16} />
-                  <span>Save Microdata Option</span>
+                  <span>Save</span>
                 </>
               )}
             </button>
