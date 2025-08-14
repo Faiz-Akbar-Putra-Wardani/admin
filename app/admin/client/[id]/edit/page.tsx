@@ -104,7 +104,7 @@ export default function ClientEditPage() {
       await api.post(`/admin/clients/${clientId}`, submitData);
 
       toast.success("Client updated successfully!");
-      router.push("/admin/clients");
+      router.push("/admin/client");
     } catch (error: any) {
       const message =
         error?.response?.data?.message || "An unexpected error occurred";
@@ -181,7 +181,7 @@ export default function ClientEditPage() {
           {/* Position Client */}
           <div>
             <label className="block text-sm font-medium text-gray-300 mb-2">
-              Positiont *
+              Position *
             </label>
             <input
               type="text"
@@ -212,11 +212,11 @@ export default function ClientEditPage() {
           </div>
 
           {/* Actions */}
-          <div className="flex space-x-4 pt-4">
+          <div className="flex flex-col space-y-4 sm:flex-row sm:space-y-0 sm:space-x-4 pt-4">
             <button
               type="submit"
               disabled={isSubmitting}
-              className="flex-1 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 disabled:opacity-50 px-4 py-2 rounded-lg flex items-center justify-center space-x-2 transition-all text-white"
+              className="w-full sm:w-auto flex-1 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 disabled:opacity-50 px-4 py-2 rounded-lg flex items-center justify-center space-x-2 transition-all text-white"
             >
               {isSubmitting ? (
                 <>
@@ -234,7 +234,7 @@ export default function ClientEditPage() {
               type="button"
               onClick={handleCancel}
               disabled={isSubmitting}
-              className="flex-1 bg-gray-600 hover:bg-gray-700 disabled:opacity-50 px-4 py-2 rounded-lg transition-colors text-white"
+              className="w-full sm:w-auto flex-1 bg-gray-600 hover:bg-gray-700 disabled:opacity-50 px-4 py-2 rounded-lg transition-colors text-white"
             >
               Cancel
             </button>
