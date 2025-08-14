@@ -78,16 +78,22 @@ export default function Sidebar({ sidebarOpen, setSidebarOpen }: SidebarProps) {
       active: pathname.startsWith("/admin/microdata-options"),
     },
     {
-      title: "Partnerships",
+      title: "Partnership",
       icon: Handshake,
       href: "/admin/partnership",
       active: pathname.startsWith("/admin/partnership"),
     },
     {
+      title: "Portofolio",
+      icon: Network,
+      href: "/admin/portofolio",
+      active: pathname === "/admin/portofolio" || pathname.startsWith("/admin/portofolio/"),
+    },
+    {
       title: "Portofolio Categories",
       icon: FolderOpen,
       href: "/admin/portofolio-categories",
-      active: pathname.startsWith("/admin/portofolio-categories"),
+      active: pathname === "/admin/portofolio-categories" || pathname.startsWith("/admin/portofolio-categories/"),
     },
     {
       title: "Position",
