@@ -41,15 +41,15 @@ export default function ServiceCreatePage() {
 
   const validateForm = () => {
     if (!formData.title.trim()) {
-      setError('Judul wajib diisi');
+      setError('Title is required');
       return false;
     }
     if (!formData.name_service.trim()) {
-      setError('Nama layanan wajib diisi');
+      setError('Service name is required');
       return false;
     }
     if (!formData.description.trim()) {
-      setError('Deskripsi wajib diisi');
+      setError('Description is required');
       return false;
     }
     return true;
@@ -71,10 +71,10 @@ export default function ServiceCreatePage() {
 
       await api.post('/admin/services-landing-pages', submitData);
 
-      toast.success('Layanan berhasil ditambahkan!');
-      router.push('/admin/service');
+      toast.success('Service added successfully!');
+      router.push('/admin/service-landingpage');
     } catch (error: any) {
-      const message = error?.response?.data?.message || 'Terjadi kesalahan tak terduga';
+      const message = error?.response?.data?.message || 'An unexpected error occurred';
       setError(message);
       toast.error(message);
     } finally {
@@ -87,17 +87,20 @@ export default function ServiceCreatePage() {
   };
 
   return (
-    <div className="p-6">
+    <div className="p-4 sm:p-6">
       {/* Header */}
-      <div className="flex items-center justify-between mb-6">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6 gap-4">
         <div className="flex items-center space-x-3">
           <Layers size={24} className="text-blue-500" />
-          <h1 className="text-2xl font-bold text-white">Tambah Layanan Baru</h1>
+          <h1 className="text-xl sm:text-2xl font-bold text-white">
+            Add New Service Landing Page
+          </h1>
         </div>
+
         <button
           onClick={handleCancel}
           disabled={isSubmitting}
-          className="p-2 hover:bg-gray-800 rounded-lg transition-colors disabled:opacity-50"
+          className="p-2 hover:bg-gray-800 rounded-lg transition-colors disabled:opacity-50 self-start sm:self-auto"
           title="Back"
         >
           <ArrowLeft size={20} className="text-gray-300" />
@@ -113,18 +116,18 @@ export default function ServiceCreatePage() {
       )}
 
       {/* Form */}
-      <div className="bg-gray-800 rounded-xl p-6">
+      <div className="bg-gray-800 rounded-xl p-4 sm:p-6">
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* Title */}
           <div>
             <label className="block text-sm font-medium text-gray-300 mb-2">
-              Judul *
+              Title *
             </label>
             <input
               type="text"
               value={formData.title}
               onChange={(e) => handleInputChange('title', e.target.value)}
-              placeholder="Masukkan judul layanan"
+              placeholder="Enter service title"
               disabled={isSubmitting}
               className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-white disabled:opacity-50"
             />
@@ -133,13 +136,13 @@ export default function ServiceCreatePage() {
           {/* Name Service */}
           <div>
             <label className="block text-sm font-medium text-gray-300 mb-2">
-              Nama Layanan *
+              Service Name *
             </label>
             <input
               type="text"
               value={formData.name_service}
               onChange={(e) => handleInputChange('name_service', e.target.value)}
-              placeholder="Masukkan nama layanan"
+              placeholder="Enter service name"
               disabled={isSubmitting}
               className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-white disabled:opacity-50"
             />
@@ -148,33 +151,33 @@ export default function ServiceCreatePage() {
           {/* Description */}
           <div>
             <label className="block text-sm font-medium text-gray-300 mb-2">
-              Deskripsi *
+              Description *
             </label>
             <textarea
               value={formData.description}
               onChange={(e) => handleInputChange('description', e.target.value)}
-              placeholder="Masukkan deskripsi layanan"
+              placeholder="Enter service description"
               disabled={isSubmitting}
               className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-white disabled:opacity-50 h-32 resize-none"
             />
           </div>
 
-          {/* Actions */}
-          <div className="flex space-x-4 pt-4">
+          {/* Buttons */}
+          <div className="flex flex-col sm:flex-row gap-3 pt-4">
             <button
               type="submit"
               disabled={isSubmitting}
-              className="flex-1 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 disabled:opacity-50 px-4 py-2 rounded-lg flex items-center justify-center space-x-2 transition-all text-white"
+              className="w-full sm:w-auto bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 disabled:opacity-50 px-4 py-2 rounded-lg flex items-center justify-center space-x-2 transition-all text-white"
             >
               {isSubmitting ? (
                 <>
                   <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
-                  <span>Menyimpan...</span>
+                  <span>Saving....</span>
                 </>
               ) : (
                 <>
                   <Save size={16} />
-                  <span>Simpan Layanan</span>
+                  <span>Save Service</span>
                 </>
               )}
             </button>
@@ -182,9 +185,9 @@ export default function ServiceCreatePage() {
               type="button"
               onClick={handleCancel}
               disabled={isSubmitting}
-              className="flex-1 bg-gray-600 hover:bg-gray-700 disabled:opacity-50 px-4 py-2 rounded-lg transition-colors text-white"
+              className="w-full sm:w-auto bg-gray-600 hover:bg-gray-700 disabled:opacity-50 px-4 py-2 rounded-lg transition-colors text-white"
             >
-              Batal
+              Cancel
             </button>
           </div>
         </form>

@@ -10,6 +10,14 @@ export default function ServiceEditPage() {
   const params = useParams();
   const serviceId = params.id;
 
+  // Auth check
+  useEffect(() => {
+    const token = localStorage.getItem("authToken");
+    if (!token) {
+      router.push("/login");
+    }
+  }, [router]);
+
   const [formData, setFormData] = useState<{
     id: string;
     title: string;
@@ -29,6 +37,7 @@ export default function ServiceEditPage() {
   // Fetch service data
   useEffect(() => {
     const fetchService = async () => {
+      setLoading(true);
       try {
         const response = await api.get(`/services-landing-pages/${serviceId}`);
         const serviceData = response.data.data || response.data;
@@ -41,7 +50,7 @@ export default function ServiceEditPage() {
         });
       } catch (error) {
         console.error('Error fetching service:', error);
-        setError('Gagal memuat data layanan');
+        setError('Failed to load service data');
       } finally {
         setLoading(false);
       }
@@ -62,21 +71,21 @@ export default function ServiceEditPage() {
 
   const validateForm = () => {
     if (!formData.title.trim()) {
-      setError('Judul wajib diisi');
+      setError('Title is required');
       return false;
     }
     if (!formData.name_service.trim()) {
-      setError('Nama layanan wajib diisi');
+      setError('Service name is required');
       return false;
     }
     if (!formData.description.trim()) {
-      setError('Deskripsi wajib diisi');
+      setError('Description is required');
       return false;
     }
     return true;
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     if (!validateForm()) return;
@@ -93,18 +102,13 @@ export default function ServiceEditPage() {
 
       await api.post(`/admin/services-landing-pages/${serviceId}`, submitData);
 
-      toast.success('Layanan berhasil diperbarui!');
-      setTimeout(() => {
-        router.push('/admin/service-landingpage');
-      }, 1500);
-    } catch (error) {
-      console.error('Error submitting form:', error);
-      if (typeof error === 'object' && error !== null && 'response' in error) {
-        const err = error as { response?: { data?: { message?: string } } };
-        setError(err.response?.data?.message || 'Terjadi kesalahan tak terduga');
-      } else {
-        setError('Terjadi kesalahan tak terduga');
-      }
+      toast.success('Service updated successfully!');
+      router.push('/admin/service-landingpage');
+    } catch (error: any) {
+      const message =
+        error?.response?.data?.message || "An unexpected error occurred";
+      setError(message);
+      toast.error(message);
     } finally {
       setIsSubmitting(false);
     }
@@ -130,17 +134,22 @@ export default function ServiceEditPage() {
   return (
     <div className="p-6">
       {/* Header */}
-      <div className="flex items-center mb-6">
+      <div className="flex items-center justify-between mb-6">
+        <div className="flex items-center space-x-3">
+          <Layers size={24} className="text-blue-500" />
+          <h1 className="text-2xl font-bold text-white">Edit Service Landing Page</h1>
+        </div>
         <button
           onClick={handleCancel}
           disabled={isSubmitting}
-          className="mr-4 p-2 hover:bg-gray-800 rounded-lg transition-colors disabled:opacity-50"
+          className="p-2 hover:bg-gray-800 rounded-lg transition-colors disabled:opacity-50"
+          title="Back"
         >
-          <ArrowLeft size={20} />
+          <ArrowLeft size={20} className="text-gray-300" />
         </button>
-        <h1 className="text-2xl font-bold">Edit Layanan</h1>
       </div>
 
+      {/* Error */}
       {error && (
         <div className="mb-6 bg-red-900/50 border border-red-500 rounded-lg p-4 flex items-center space-x-3">
           <AlertCircle size={20} className="text-red-400" />
@@ -148,59 +157,69 @@ export default function ServiceEditPage() {
         </div>
       )}
 
+      {/* Form */}
       <div className="bg-gray-800 rounded-xl p-6">
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* Title */}
           <div>
-            <label className="block text-sm font-medium text-gray-300 mb-2">Judul *</label>
+            <label className="block text-sm font-medium text-gray-300 mb-2">
+              Title *
+            </label>
             <input
               type="text"
               value={formData.title}
               onChange={(e) => handleInputChange('title', e.target.value)}
+              placeholder="Enter service title"
               disabled={isSubmitting}
-              className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white"
+              className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-white disabled:opacity-50"
             />
           </div>
 
           {/* Name Service */}
           <div>
-            <label className="block text-sm font-medium text-gray-300 mb-2">Nama Layanan *</label>
+            <label className="block text-sm font-medium text-gray-300 mb-2">
+              Service Name *
+            </label>
             <input
               type="text"
               value={formData.name_service}
               onChange={(e) => handleInputChange('name_service', e.target.value)}
+              placeholder="Enter service name"
               disabled={isSubmitting}
-              className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white"
+              className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-white disabled:opacity-50"
             />
           </div>
 
           {/* Description */}
           <div>
-            <label className="block text-sm font-medium text-gray-300 mb-2">Deskripsi *</label>
+            <label className="block text-sm font-medium text-gray-300 mb-2">
+              Description *
+            </label>
             <textarea
               value={formData.description}
               onChange={(e) => handleInputChange('description', e.target.value)}
+              placeholder="Enter service description"
               disabled={isSubmitting}
-              className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white h-32 resize-none"
+              className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-white disabled:opacity-50 h-32 resize-none"
             />
           </div>
 
           {/* Actions */}
-          <div className="flex space-x-4 pt-4">
+          <div className="flex flex-col space-y-4 sm:flex-row sm:space-y-0 sm:space-x-4 pt-4">
             <button
               type="submit"
               disabled={isSubmitting}
-              className="flex-1 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 disabled:opacity-50 px-4 py-2 rounded-lg flex items-center justify-center space-x-2 text-white"
+              className="w-full sm:w-auto flex-1 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 disabled:opacity-50 px-4 py-2 rounded-lg flex items-center justify-center space-x-2 transition-all text-white"
             >
               {isSubmitting ? (
                 <>
-                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white" />
-                  <span>Memperbarui...</span>
+                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                  <span>Saving...</span>
                 </>
               ) : (
                 <>
                   <Save size={16} />
-                  <span>Perbarui Layanan</span>
+                  <span>Save Service</span>
                 </>
               )}
             </button>
@@ -208,9 +227,9 @@ export default function ServiceEditPage() {
               type="button"
               onClick={handleCancel}
               disabled={isSubmitting}
-              className="flex-1 bg-gray-600 hover:bg-gray-700 px-4 py-2 rounded-lg text-white"
+              className="w-full sm:w-auto flex-1 bg-gray-600 hover:bg-gray-700 disabled:opacity-50 px-4 py-2 rounded-lg transition-colors text-white"
             >
-              Batal
+              Cancel
             </button>
           </div>
         </form>
