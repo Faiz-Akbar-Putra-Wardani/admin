@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { Save, ArrowLeft, Upload, AlertCircle, Briefcase } from "lucide-react";
+import { Save, ArrowLeft, Upload, AlertCircle, Briefcase, Users } from "lucide-react";
 import { useRouter } from "next/navigation";
 import api from "../../../../lib/api";
 import toast from "react-hot-toast";
@@ -121,7 +121,7 @@ export default function TeamCreatePage() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6 gap-3 sm:gap-0">
         <div className="flex items-center gap-3">
-          <Briefcase size={24} className="text-blue-500" />
+          <Users size={24} className="text-blue-500" />
           <h1 className="text-lg sm:text-2xl font-bold text-white">
             Add New Team
           </h1>
@@ -147,10 +147,10 @@ export default function TeamCreatePage() {
       {/* Form */}
       <div className="bg-gray-800 rounded-xl p-4 sm:p-6">
         <form onSubmit={handleSubmit} className="space-y-6">
-          {/* Icon */}
+          {/* Photo */}
           <div>
             <label className="block text-sm font-medium text-gray-300 mb-2">
-              Icon
+              Photo
             </label>
             <div className="flex flex-col sm:flex-row sm:items-center gap-4">
               <div className="w-24 h-24 bg-gray-700 rounded-lg flex items-center justify-center overflow-hidden mx-auto sm:mx-0">
@@ -179,10 +179,10 @@ export default function TeamCreatePage() {
                     isSubmitting ? "opacity-50 cursor-not-allowed" : ""
                   }`}
                 >
-                  Choose Icon
+                  Choose Photo
                 </label>
                 <p className="text-sm text-gray-400 mt-1">
-                  Upload an icon (max 5MB)
+                  Upload an photo (max 5MB)
                 </p>
               </div>
             </div>

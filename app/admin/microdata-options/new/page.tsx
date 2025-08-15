@@ -64,7 +64,6 @@ export default function MicrodataOptionCreatePage() {
     setError(null);
 
     try {
-      // Mengirim data ke endpoint API yang benar
       await api.post("admin/microdata-options", formData, {
         headers: {
           "Content-Type": "application/json",
