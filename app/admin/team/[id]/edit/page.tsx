@@ -111,35 +111,37 @@ export default function NewCareerPage() {
   };
 
   return (
-    <div className="p-6">
+    <div className="p-4 sm:p-6">
       {/* Header */}
-      <div className="flex items-center mb-6">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:gap-4 mb-6">
         <button
           onClick={handleCancel}
           disabled={isSubmitting}
-          className="mr-4 p-2 hover:bg-gray-800 rounded-lg transition-colors disabled:opacity-50"
+          className="p-2 hover:bg-gray-800 rounded-lg transition-colors disabled:opacity-50 w-fit"
         >
           <ArrowLeft size={20} />
         </button>
-        <h1 className="text-2xl font-bold">New Career</h1>
+        <h1 className="text-xl sm:text-2xl font-bold mt-2 sm:mt-0">
+          New Career
+        </h1>
       </div>
 
       {error && (
-        <div className="mb-6 bg-red-900/50 border border-red-500 rounded-lg p-4 flex items-center space-x-3">
+        <div className="mb-6 bg-red-900/50 border border-red-500 rounded-lg p-4 flex flex-col sm:flex-row sm:items-center gap-3">
           <AlertCircle size={20} className="text-red-400" />
           <span className="text-red-200">{error}</span>
         </div>
       )}
 
-      <div className="bg-gray-800 rounded-xl p-6">
+      <div className="bg-gray-800 rounded-xl p-4 sm:p-6">
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* Image */}
           <div>
             <label className="block text-sm font-medium text-gray-300 mb-2">
               Image
             </label>
-            <div className="flex items-center space-x-4">
-              <div className="w-24 h-24 bg-gray-700 rounded-lg flex items-center justify-center overflow-hidden">
+            <div className="flex flex-col sm:flex-row sm:items-center gap-4">
+              <div className="w-24 h-24 bg-gray-700 rounded-lg flex items-center justify-center overflow-hidden mx-auto sm:mx-0">
                 {imagePreview ? (
                   <img
                     src={imagePreview}
@@ -150,7 +152,7 @@ export default function NewCareerPage() {
                   <Upload size={24} className="text-gray-400" />
                 )}
               </div>
-              <div>
+              <div className="text-center sm:text-left">
                 <input
                   type="file"
                   accept="image/*"
@@ -184,6 +186,7 @@ export default function NewCareerPage() {
               value={formData.title}
               onChange={(e) => handleInputChange("title", e.target.value)}
               disabled={isSubmitting}
+              placeholder="Enter title"
               className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white"
             />
           </div>
@@ -197,16 +200,17 @@ export default function NewCareerPage() {
               value={formData.description}
               onChange={(e) => handleInputChange("description", e.target.value)}
               disabled={isSubmitting}
+              placeholder="Enter description"
               className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white h-32 resize-none"
             />
           </div>
 
           {/* Actions */}
-          <div className="flex space-x-4 pt-4">
+          <div className="flex flex-col sm:flex-row gap-3 pt-4">
             <button
               type="submit"
               disabled={isSubmitting}
-              className="flex-1 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 disabled:opacity-50 px-4 py-2 rounded-lg flex items-center justify-center space-x-2 text-white"
+              className="w-full sm:w-auto flex-1 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 disabled:opacity-50 px-4 py-2 rounded-lg flex items-center justify-center gap-2 text-white"
             >
               {isSubmitting ? (
                 <>
@@ -224,7 +228,7 @@ export default function NewCareerPage() {
               type="button"
               onClick={handleCancel}
               disabled={isSubmitting}
-              className="flex-1 bg-gray-600 hover:bg-gray-700 px-4 py-2 rounded-lg text-white"
+              className="w-full sm:w-auto flex-1 bg-gray-600 hover:bg-gray-700 px-4 py-2 rounded-lg text-white"
             >
               Cancel
             </button>
