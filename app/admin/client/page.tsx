@@ -95,7 +95,7 @@ export default function ClientPage() {
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6 gap-4">
           <div className="flex items-center space-x-3">
             <FileText size={24} className="text-blue-500" />
-            <h1 className="text-xl sm:text-2xl font-bold">Client Management</h1>
+            <h1 className="text-xl sm:text-2xl font-bold">Client Management </h1>
             <button
               onClick={handleRefresh}
               disabled={loading}

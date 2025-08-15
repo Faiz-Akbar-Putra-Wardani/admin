@@ -138,7 +138,7 @@ export default function ClientEditPage() {
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center space-x-3">
           <Upload size={24} className="text-blue-500" />
-          <h1 className="text-2xl font-bold text-white">Edit Client</h1>
+          <h1 className="text-2xl font-bold text-white">Edit Client </h1>
         </div>
         <button
           onClick={handleCancel}
