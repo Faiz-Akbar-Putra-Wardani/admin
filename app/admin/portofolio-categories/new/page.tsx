@@ -1,5 +1,6 @@
 // app/admin/portofolio-categories/new/page.tsx
 "use client";
+
 import React, { useState, useEffect } from "react";
 import { Save, ArrowLeft, FolderOpen, AlertCircle } from "lucide-react";
 import { useRouter } from "next/navigation";
@@ -27,8 +28,8 @@ export default function PortofolioCategoryCreatePage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const handleInputChange = (value: string) => {
-    setFormData({ name: value });
+  const handleInputChange = (field: keyof PortofolioCategoryFormData, value: string) => {
+    setFormData((prev) => ({ ...prev, [field]: value }));
     if (error) setError(null);
   };
 
@@ -48,7 +49,7 @@ export default function PortofolioCategoryCreatePage() {
     setError(null);
 
     try {
-      await api.post("/admin/Portofolio-categories", formData, {
+      await api.post("/admin/portofolio-categories", formData, {
         headers: {
           "Content-Type": "application/json",
         },
@@ -70,11 +71,12 @@ export default function PortofolioCategoryCreatePage() {
   };
 
   return (
-    <div className="p-4 md:p-6 lg:p-8 max-w-2xl mx-auto">
+    <div className="p-6">
+      {/* Header */}
       <div className="flex items-center justify-between mb-6">
-        <div className="flex items-center space-x-2 md:space-x-3">
-          <FolderOpen size={20} className="text-blue-500" />
-          <h1 className="text-xl md:text-2xl font-bold text-white">Add New Portofolio Category</h1>
+        <div className="flex items-center space-x-3">
+          <FolderOpen size={24} className="text-blue-500" />
+          <h1 className="text-2xl font-bold text-white">Add New Portofolio Category</h1>
         </div>
         <button
           onClick={handleCancel}
@@ -86,15 +88,18 @@ export default function PortofolioCategoryCreatePage() {
         </button>
       </div>
 
+      {/* Error */}
       {error && (
-        <div className="mb-4 md:mb-6 bg-red-900/50 border border-red-500 rounded-lg p-3 md:p-4 flex items-center space-x-3">
+        <div className="mb-6 bg-red-900/50 border border-red-500 rounded-lg p-4 flex items-center space-x-3">
           <AlertCircle size={20} className="text-red-400" />
-          <span className="text-red-200 text-sm">{error}</span>
+          <span className="text-red-200">{error}</span>
         </div>
       )}
 
-      <div className="bg-gray-800 rounded-xl p-4 md:p-6">
-        <form onSubmit={handleSubmit} className="space-y-4 md:space-y-6">
+      {/* Form */}
+      <div className="bg-gray-800 rounded-xl p-6">
+        <form onSubmit={handleSubmit} className="space-y-6">
+          {/* Name */}
           <div>
             <label className="block text-sm font-medium text-gray-300 mb-2">
               Category Name *
@@ -102,18 +107,19 @@ export default function PortofolioCategoryCreatePage() {
             <input
               type="text"
               value={formData.name}
-              onChange={(e) => handleInputChange(e.target.value)}
+              onChange={(e) => handleInputChange("name", e.target.value)}
               placeholder="Enter category name"
               disabled={isSubmitting}
-              className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-white disabled:opacity-50 text-sm md:text-base"
+              className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-white disabled:opacity-50"
             />
           </div>
 
-          <div className="flex flex-col md:flex-row space-y-2 md:space-y-0 md:space-x-4 pt-2 md:pt-4">
+          {/* Actions */}
+          <div className="flex space-x-4 pt-4">
             <button
               type="submit"
               disabled={isSubmitting}
-              className="flex-1 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 disabled:opacity-50 px-4 py-2 rounded-lg flex items-center justify-center space-x-2 transition-all text-white text-sm"
+              className="flex-1 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 disabled:opacity-50 px-4 py-2 rounded-lg flex items-center justify-center space-x-2 transition-all text-white"
             >
               {isSubmitting ? (
                 <>
@@ -131,7 +137,7 @@ export default function PortofolioCategoryCreatePage() {
               type="button"
               onClick={handleCancel}
               disabled={isSubmitting}
-              className="flex-1 bg-gray-600 hover:bg-gray-700 disabled:opacity-50 px-4 py-2 rounded-lg transition-colors text-white text-sm"
+              className="flex-1 bg-gray-600 hover:bg-gray-700 disabled:opacity-50 px-4 py-2 rounded-lg transition-colors text-white"
             >
               Cancel
             </button>
