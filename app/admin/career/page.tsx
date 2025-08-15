@@ -8,7 +8,7 @@ import {
   Users,
   RefreshCw,
   AlertCircle,
-  ArrowLeft,
+  FileText,
   Info,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
@@ -34,7 +34,6 @@ export default function CareerPage() {
   const fetchData = async () => {
     setLoading(true);
     setError(null);
-
     try {
       const response = await api.get("/careers");
       const careerData = response.data.data || response.data;
@@ -65,17 +64,9 @@ export default function CareerPage() {
     router.push("/admin/career/new");
   };
 
-  interface EditHandler {
-    (item: CareerItem): void;
-  }
-
-  const handleEdit: EditHandler = (item) => {
+  const handleEdit = (item: CareerItem) => {
     router.push(`/admin/career/${item.id}/edit`);
   };
-
-  interface DeleteHandler {
-    (item: CareerItem): Promise<void>;
-  }
 
   const [confirmDeleteItem, setConfirmDeleteItem] = useState<CareerItem | null>(
     null
@@ -120,17 +111,31 @@ export default function CareerPage() {
               <RefreshCw size={16} className={loading ? "animate-spin" : ""} />
             </button>
           </div>
+
+          {/* Tombol Add - Desktop */}
           <button
             onClick={handleAdd}
             disabled={loading}
-            className="bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 disabled:opacity-50 px-4 py-2 rounded-lg flex items-center space-x-2 transition-all"
+            className="hidden md:flex bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 disabled:opacity-50 px-4 py-2 rounded-lg items-center space-x-2 transition-all"
           >
             <Plus size={16} />
             <span>Add Career</span>
           </button>
         </div>
 
-        {/* Error Message */}
+        {/* Tombol Add - Mobile */}
+        <div className="md:hidden mb-4">
+          <button
+            onClick={handleAdd}
+            disabled={loading}
+            className="w-full bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 disabled:opacity-50 px-4 py-2 rounded-lg flex items-center justify-center space-x-2 transition-all"
+          >
+            <Plus size={16} />
+            <span>Add Career</span>
+          </button>
+        </div>
+
+        {/* Error */}
         {error && (
           <div className="mb-6 bg-red-900/50 border border-red-500 rounded-lg p-4 flex items-center space-x-3">
             <AlertCircle size={20} className="text-red-400" />
@@ -156,18 +161,18 @@ export default function CareerPage() {
           </div>
         </div>
 
-        {/* Loading State */}
+        {/* Loading */}
         {loading && (
           <div className="bg-gray-800 rounded-xl p-8 text-center">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto mb-4"></div>
-            <p className="text-gray-400">Loading career data...</p>
+            <p className="text-gray-400">Loading careers...</p>
           </div>
         )}
 
         {/* Content */}
         {!loading && filteredData.length === 0 ? (
           <div className="bg-gray-800 rounded-xl p-8 text-center">
-            <Users size={48} className="mx-auto text-gray-600 mb-4" />
+            <FileText size={48} className="mx-auto text-gray-600 mb-4" />
             <h3 className="text-lg font-semibold text-gray-300 mb-2">
               {searchTerm ? "No careers found" : "No careers yet"}
             </h3>
@@ -194,7 +199,7 @@ export default function CareerPage() {
                   className="bg-gray-800 rounded-xl p-6 hover:bg-gray-750 transition-colors"
                 >
                   {/* Image */}
-                  <div className="w-24 h-24 mx-auto mb-4 bg-gray-700 rounded-lg overflow-hidden">
+                  <div className="w-20 h-20 mx-auto mb-4 bg-gray-700 rounded-full overflow-hidden">
                     {career.image_url ? (
                       <img
                         src={career.image_url}
@@ -213,7 +218,7 @@ export default function CareerPage() {
                     <h3 className="text-lg font-semibold text-white mb-1">
                       {career.title}
                     </h3>
-                    <p className="text-gray-400 text-sm line-clamp-3">
+                    <p className="text-gray-400 text-sm">
                       {career.description}
                     </p>
                   </div>
@@ -255,6 +260,7 @@ export default function CareerPage() {
           </div>
         )}
       </div>
+
       {confirmDeleteItem && (
         <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50">
           <div className="bg-gray-900 border border-gray-700 p-6 rounded-xl shadow-xl w-full max-w-md">

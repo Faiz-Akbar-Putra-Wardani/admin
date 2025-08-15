@@ -37,7 +37,9 @@ export default function PortofolioPage() {
   const [filteredData, setFilteredData] = useState<Portofolio[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [confirmDeleteItem, setConfirmDeleteItem] = useState<Portofolio | null>(null);
+  const [confirmDeleteItem, setConfirmDeleteItem] = useState<Portofolio | null>(
+    null
+  );
 
   const fetchData = async () => {
     setLoading(true);
@@ -104,7 +106,7 @@ export default function PortofolioPage() {
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center space-x-3">
             <Info size={24} className="text-blue-500" />
-            <h1 className="text-2xl font-bold">Portofolio Management</h1>
+            <h1 className="text-2xl font-bold">Portfolio Management</h1>
             <button
               onClick={handleRefresh}
               disabled={loading}
@@ -114,13 +116,27 @@ export default function PortofolioPage() {
               <RefreshCw size={16} className={loading ? "animate-spin" : ""} />
             </button>
           </div>
+
+          {/* Tombol Add - Desktop */}
           <button
             onClick={handleAdd}
             disabled={loading}
-            className="bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 disabled:opacity-50 px-4 py-2 rounded-lg flex items-center space-x-2 transition-all"
+            className="hidden md:flex bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 disabled:opacity-50 px-4 py-2 rounded-lg items-center space-x-2 transition-all"
           >
             <Plus size={16} />
-            <span>Add Portofolio</span>
+            <span>Add Portfolio</span>
+          </button>
+        </div>
+
+        {/* Tombol Add - Mobile */}
+        <div className="md:hidden mb-4">
+          <button
+            onClick={handleAdd}
+            disabled={loading}
+            className="w-full bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 disabled:opacity-50 px-4 py-2 rounded-lg flex items-center justify-center space-x-2 transition-all"
+          >
+            <Plus size={16} />
+            <span>Add Portfolio</span>
           </button>
         </div>
 
@@ -140,7 +156,7 @@ export default function PortofolioPage() {
           />
           <input
             type="text"
-            placeholder="Search portofolio..."
+            placeholder="Search portfolio..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             disabled={loading}
@@ -152,7 +168,7 @@ export default function PortofolioPage() {
         {loading && (
           <div className="bg-gray-800 rounded-xl p-8 text-center">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto mb-4"></div>
-            <p className="text-gray-400">Loading portofolio...</p>
+            <p className="text-gray-400">Loading portfolio...</p>
           </div>
         )}
 
@@ -161,19 +177,19 @@ export default function PortofolioPage() {
           <div className="bg-gray-800 rounded-xl p-8 text-center">
             <ImageIcon size={48} className="mx-auto text-gray-600 mb-4" />
             <h3 className="text-lg font-semibold text-gray-300 mb-2">
-              {searchTerm ? "No portofolio found" : "No portofolio yet"}
+              {searchTerm ? "No portfolio found" : "No portfolio yet"}
             </h3>
             <p className="text-gray-400 mb-4">
               {searchTerm
                 ? "Try adjusting your search terms"
-                : "Start by adding your first portofolio"}
+                : "Start by adding your first portfolio"}
             </p>
             {!searchTerm && (
               <button
                 onClick={handleAdd}
                 className="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-lg transition-colors"
               >
-                Add Portofolio
+                Add Portfolio
               </button>
             )}
           </div>
@@ -206,7 +222,8 @@ export default function PortofolioPage() {
                   </h3>
                   <p className="text-gray-400 text-sm">{item.name_project}</p>
                   <p className="text-gray-500 text-xs">
-                    {item.company_name} — {item.category?.name || `Category #${item.category_id}`}
+                    {item.company_name} —{" "}
+                    {item.category?.name || `Category #${item.category_id}`}
                   </p>
 
                   {/* Actions */}
@@ -238,41 +255,44 @@ export default function PortofolioPage() {
         {!loading && (
           <div className="mt-8 bg-gray-800 rounded-xl p-4">
             <div className="flex items-center justify-between text-sm text-gray-400">
-              <span>Total Portofolio: {data.length}</span>
-              {searchTerm && <span>Showing: {filteredData.length} results</span>}
+              <span>Total Portfolio: {data.length}</span>
+              {searchTerm && (
+                <span>Showing: {filteredData.length} results</span>
+              )}
+            </div>
+          </div>
+        )}
+
+        {/* Delete Modal */}
+        {confirmDeleteItem && (
+          <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50">
+            <div className="bg-gray-900 border border-gray-700 p-6 rounded-xl shadow-xl w-full max-w-md">
+              <h2 className="text-lg font-semibold text-white mb-2">
+                Delete {confirmDeleteItem.title}?
+              </h2>
+              <p className="text-sm text-gray-400 mb-4">
+                Are you sure you want to delete this portfolio? This action
+                cannot be undone.
+              </p>
+              <div className="flex justify-end space-x-2">
+                <button
+                  onClick={() => setConfirmDeleteItem(null)}
+                  className="px-4 py-2 text-sm text-gray-300 hover:text-white hover:bg-gray-700 rounded-lg"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={handleDeleteConfirm}
+                  disabled={loading}
+                  className="px-4 py-2 text-sm bg-red-600 hover:bg-red-700 text-white rounded-lg disabled:opacity-50"
+                >
+                  {loading ? "Deleting..." : "Delete"}
+                </button>
+              </div>
             </div>
           </div>
         )}
       </div>
-
-      {/* Delete Modal */}
-      {confirmDeleteItem && (
-        <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50">
-          <div className="bg-gray-900 border border-gray-700 p-6 rounded-xl shadow-xl w-full max-w-md">
-            <h2 className="text-lg font-semibold text-white mb-2">
-              Delete {confirmDeleteItem.title}?
-            </h2>
-            <p className="text-sm text-gray-400 mb-4">
-              Are you sure you want to delete this portofolio? This action cannot be undone.
-            </p>
-            <div className="flex justify-end space-x-2">
-              <button
-                onClick={() => setConfirmDeleteItem(null)}
-                className="px-4 py-2 text-sm text-gray-300 hover:text-white hover:bg-gray-700 rounded-lg"
-              >
-                Cancel
-              </button>
-              <button
-                onClick={handleDeleteConfirm}
-                disabled={loading}
-                className="px-4 py-2 text-sm bg-red-600 hover:bg-red-700 text-white rounded-lg disabled:opacity-50"
-              >
-                {loading ? "Deleting..." : "Delete"}
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 }
