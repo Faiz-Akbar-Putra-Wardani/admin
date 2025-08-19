@@ -20,13 +20,11 @@ export default function PositionEditPage() {
   }, [router]);
 
   interface PositionFormData {
-    title: string;
     position: string;
     description: string;
   }
 
   const [formData, setFormData] = useState<PositionFormData>({
-    title: "",
     position: "",
     description: "",
   });
@@ -43,7 +41,6 @@ export default function PositionEditPage() {
         const response = await api.get(`/positions/${positionId}`);
         const positionData = response.data.data || response.data; // Adjust based on API response structure
         setFormData({
-          title: positionData.title || "",
           position: positionData.position || "",
           description: positionData.description || "",
         });
@@ -69,10 +66,6 @@ export default function PositionEditPage() {
   };
 
   const validateForm = () => {
-    if (!formData.title.trim()) {
-      setError("Title is required");
-      return false;
-    }
     if (!formData.position.trim()) {
       setError("Position is required");
       return false;
@@ -94,7 +87,6 @@ export default function PositionEditPage() {
 
     try {
       const submitData = new FormData();
-      submitData.append("title", formData.title);
       submitData.append("position", formData.position);
       submitData.append("description", formData.description);
       submitData.append("_method", "PUT");
@@ -162,21 +154,6 @@ export default function PositionEditPage() {
       {/* Form */}
       <div className="bg-gray-800 rounded-xl p-6">
         <form onSubmit={handleSubmit} className="space-y-6">
-          {/* Title */}
-          <div>
-            <label className="block text-sm font-medium text-gray-300 mb-2">
-              Title *
-            </label>
-            <input
-              type="text"
-              value={formData.title}
-              onChange={(e) => handleInputChange("title", e.target.value)}
-              placeholder="Enter position title"
-              disabled={isSubmitting}
-              className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-white disabled:opacity-50"
-            />
-          </div>
-
           {/* Position */}
           <div>
             <label className="block text-sm font-medium text-gray-300 mb-2">

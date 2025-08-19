@@ -153,7 +153,7 @@ export default function TeamCreatePage() {
               Photo
             </label>
             <div className="flex flex-col sm:flex-row sm:items-center gap-4">
-              <div className="w-24 h-24 bg-gray-700 rounded-lg flex items-center justify-center overflow-hidden mx-auto sm:mx-0">
+              <div className="w-24 h-24 bg-gray-700 rounded-full flex items-center justify-center overflow-hidden mx-auto sm:mx-0">
                 {imagePreview ? (
                   <img
                     src={imagePreview}

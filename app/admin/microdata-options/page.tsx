@@ -50,7 +50,6 @@ export default function microdataOptionPage() {
 
   const filteredData = data.filter(
     (item) =>
-      item.title?.toLowerCase().includes(searchTerm.toLowerCase()) ||
       item.name_title?.toLowerCase().includes(searchTerm.toLowerCase()) ||
       item.description?.toLowerCase().includes(searchTerm.toLowerCase())
   );
@@ -167,9 +166,8 @@ export default function microdataOptionPage() {
                 >
                   <div className="mb-4">
                     <h3 className="text-lg font-semibold text-white mb-1">
-                      {option.title}
+                      {option.name_title}
                     </h3>
-                    <p className="text-gray-400 text-sm">{option.name_title}</p>
                     <p className="text-gray-500 text-xs line-clamp-3">
                       {option.description}
                     </p>
