@@ -17,11 +17,13 @@ export default function MicrodataOptionCreatePage() {
   }, [router]);
 
   interface MicrodataOptionFormData {
+    title: string;
     name_title: string;
     description: string;
   }
 
   const [formData, setFormData] = useState<MicrodataOptionFormData>({
+    title: "",
     name_title: "",
     description: "",
   });
@@ -38,6 +40,10 @@ export default function MicrodataOptionCreatePage() {
   };
 
   const validateForm = () => {
+    if (!formData.title.trim()) {
+      setError("Title is required");
+      return false;
+    }
     if (!formData.name_title.trim()) {
       setError("Name Title is required");
       return false;
@@ -58,6 +64,7 @@ export default function MicrodataOptionCreatePage() {
     setError(null);
 
     try {
+      // Mengirim data ke endpoint API yang benar
       await api.post("admin/microdata-options", formData, {
         headers: {
           "Content-Type": "application/json",
@@ -109,6 +116,20 @@ export default function MicrodataOptionCreatePage() {
       {/* Form */}
       <div className="bg-gray-800 rounded-xl p-6">
         <form onSubmit={handleSubmit} className="space-y-6">
+          {/* Title */}
+          <div>
+            <label className="block text-sm font-medium text-gray-300 mb-2">
+              Title *
+            </label>
+            <input
+              type="text"
+              value={formData.title}
+              onChange={(e) => handleInputChange("title", e.target.value)}
+              placeholder="Enter microdata title"
+              disabled={isSubmitting}
+              className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-white disabled:opacity-50"
+            />
+          </div>
 
           {/* Name Title */}
           <div>

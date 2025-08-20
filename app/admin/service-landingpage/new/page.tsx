@@ -17,11 +17,13 @@ export default function ServiceCreatePage() {
   }, [router]);
 
   interface ServiceFormData {
+    title: string;
     name_service: string;
     description: string;
   }
 
   const [formData, setFormData] = useState<ServiceFormData>({
+    title: '',
     name_service: '',
     description: '',
   });
@@ -38,12 +40,16 @@ export default function ServiceCreatePage() {
   };
 
   const validateForm = () => {
+    if (!formData.title.trim()) {
+      setError('Judul wajib diisi');
+      return false;
+    }
     if (!formData.name_service.trim()) {
-      setError('Service name is required');
+      setError('Nama layanan wajib diisi');
       return false;
     }
     if (!formData.description.trim()) {
-      setError('Description is required');
+      setError('Deskripsi wajib diisi');
       return false;
     }
     return true;
@@ -59,15 +65,16 @@ export default function ServiceCreatePage() {
 
     try {
       const submitData = new FormData();
+      submitData.append('title', formData.title);
       submitData.append('name_service', formData.name_service);
       submitData.append('description', formData.description);
 
       await api.post('/admin/services-landing-pages', submitData);
 
-      toast.success('Service added successfully!');
-      router.push('/admin/service-landingpage');
+      toast.success('Layanan berhasil ditambahkan!');
+      router.push('/admin/service');
     } catch (error: any) {
-      const message = error?.response?.data?.message || 'An unexpected error occurred';
+      const message = error?.response?.data?.message || 'Terjadi kesalahan tak terduga';
       setError(message);
       toast.error(message);
     } finally {
@@ -80,20 +87,17 @@ export default function ServiceCreatePage() {
   };
 
   return (
-    <div className="p-4 sm:p-6">
+    <div className="p-6">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6 gap-4">
+      <div className="flex items-center justify-between mb-6">
         <div className="flex items-center space-x-3">
           <Layers size={24} className="text-blue-500" />
-          <h1 className="text-xl sm:text-2xl font-bold text-white">
-            Add New Service Landing Page
-          </h1>
+          <h1 className="text-2xl font-bold text-white">Tambah Layanan Baru</h1>
         </div>
-
         <button
           onClick={handleCancel}
           disabled={isSubmitting}
-          className="p-2 hover:bg-gray-800 rounded-lg transition-colors disabled:opacity-50 self-start sm:self-auto"
+          className="p-2 hover:bg-gray-800 rounded-lg transition-colors disabled:opacity-50"
           title="Back"
         >
           <ArrowLeft size={20} className="text-gray-300" />
@@ -109,19 +113,33 @@ export default function ServiceCreatePage() {
       )}
 
       {/* Form */}
-      <div className="bg-gray-800 rounded-xl p-4 sm:p-6">
+      <div className="bg-gray-800 rounded-xl p-6">
         <form onSubmit={handleSubmit} className="space-y-6">
+          {/* Title */}
+          <div>
+            <label className="block text-sm font-medium text-gray-300 mb-2">
+              Judul *
+            </label>
+            <input
+              type="text"
+              value={formData.title}
+              onChange={(e) => handleInputChange('title', e.target.value)}
+              placeholder="Masukkan judul layanan"
+              disabled={isSubmitting}
+              className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-white disabled:opacity-50"
+            />
+          </div>
 
           {/* Name Service */}
           <div>
             <label className="block text-sm font-medium text-gray-300 mb-2">
-              Service Name *
+              Nama Layanan *
             </label>
             <input
               type="text"
               value={formData.name_service}
               onChange={(e) => handleInputChange('name_service', e.target.value)}
-              placeholder="Enter service name"
+              placeholder="Masukkan nama layanan"
               disabled={isSubmitting}
               className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-white disabled:opacity-50"
             />
@@ -130,33 +148,33 @@ export default function ServiceCreatePage() {
           {/* Description */}
           <div>
             <label className="block text-sm font-medium text-gray-300 mb-2">
-              Description *
+              Deskripsi *
             </label>
             <textarea
               value={formData.description}
               onChange={(e) => handleInputChange('description', e.target.value)}
-              placeholder="Enter service description"
+              placeholder="Masukkan deskripsi layanan"
               disabled={isSubmitting}
               className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-white disabled:opacity-50 h-32 resize-none"
             />
           </div>
 
-          {/* Buttons */}
-          <div className="flex flex-col sm:flex-row gap-3 pt-4">
+          {/* Actions */}
+          <div className="flex space-x-4 pt-4">
             <button
               type="submit"
               disabled={isSubmitting}
-              className="w-full sm:w-auto bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 disabled:opacity-50 px-4 py-2 rounded-lg flex items-center justify-center space-x-2 transition-all text-white"
+              className="flex-1 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 disabled:opacity-50 px-4 py-2 rounded-lg flex items-center justify-center space-x-2 transition-all text-white"
             >
               {isSubmitting ? (
                 <>
                   <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
-                  <span>Saving....</span>
+                  <span>Menyimpan...</span>
                 </>
               ) : (
                 <>
                   <Save size={16} />
-                  <span>Save Service</span>
+                  <span>Simpan Layanan</span>
                 </>
               )}
             </button>
@@ -164,9 +182,9 @@ export default function ServiceCreatePage() {
               type="button"
               onClick={handleCancel}
               disabled={isSubmitting}
-              className="w-full sm:w-auto bg-gray-600 hover:bg-gray-700 disabled:opacity-50 px-4 py-2 rounded-lg transition-colors text-white"
+              className="flex-1 bg-gray-600 hover:bg-gray-700 disabled:opacity-50 px-4 py-2 rounded-lg transition-colors text-white"
             >
-              Cancel
+              Batal
             </button>
           </div>
         </form>

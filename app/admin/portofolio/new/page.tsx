@@ -126,14 +126,14 @@ export default function PortfolioCreatePage() {
         }
       });
 
-      await api.post("/admin/portofolios", submitData, {
+      await api.post("/admin/portfolios", submitData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
       });
 
       toast.success("Portfolio added successfully!");
-      router.push("/admin/portofolio");
+      router.push("/admin/portfolio");
     } catch (error: any) {
       const message =
         error?.response?.data?.message || "An unexpected error occurred";

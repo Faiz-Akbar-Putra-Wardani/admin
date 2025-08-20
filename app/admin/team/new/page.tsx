@@ -1,18 +1,18 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
-import { Save, ArrowLeft, Upload, AlertCircle, Briefcase, Users } from "lucide-react";
-import { useRouter } from "next/navigation";
-import api from "../../../../lib/api";
-import toast from "react-hot-toast";
+import React, { useState, useEffect } from 'react';
+import { Save, ArrowLeft, Upload, AlertCircle, User } from 'lucide-react';
+import { useRouter } from 'next/navigation';
+import api from '../../../../lib/api';
+import toast from 'react-hot-toast';
 
 export default function TeamCreatePage() {
   const router = useRouter();
 
   useEffect(() => {
-    const token = localStorage.getItem("authToken");
+    const token = localStorage.getItem('authToken');
     if (!token) {
-      router.push("/login");
+      router.push('/login');
     }
   }, [router]);
 
@@ -24,8 +24,8 @@ export default function TeamCreatePage() {
 
   const [formData, setFormData] = useState<TeamFormData>({
     photo: null,
-    name: "",
-    position: "",
+    name: '',
+    position: '',
   });
 
   const [imagePreview, setImagePreview] = useState<string | null>(null);
@@ -33,7 +33,7 @@ export default function TeamCreatePage() {
   const [error, setError] = useState<string | null>(null);
 
   const handleInputChange = (field: keyof TeamFormData, value: string) => {
-    setFormData((prev) => ({
+    setFormData(prev => ({
       ...prev,
       [field]: value,
     }));
@@ -44,35 +44,35 @@ export default function TeamCreatePage() {
     const file = e.target.files?.[0];
     if (!file) return;
 
-    if (!file.type.startsWith("image/")) {
-      setError("Please select a valid image file");
+    if (!file.type.startsWith('image/')) {
+      setError('Please select a valid image file');
       return;
     }
 
     if (file.size > 5 * 1024 * 1024) {
-      setError("Image size should be less than 5MB");
+      setError('Image size should be less than 5MB');
       return;
     }
 
     const reader = new FileReader();
-    reader.onload = (event) => {
-      if (typeof event.target?.result === "string") {
+    reader.onload = event => {
+      if (typeof event.target?.result === 'string') {
         setImagePreview(event.target.result);
       }
     };
     reader.readAsDataURL(file);
 
-    setFormData((prev) => ({ ...prev, photo: file }));
+    setFormData(prev => ({ ...prev, photo: file }));
     setError(null);
   };
 
   const validateForm = () => {
     if (!formData.name.trim()) {
-      setError("Name is required");
+      setError('Name is required');
       return false;
     }
     if (!formData.position.trim()) {
-      setError("Position is required");
+      setError('Position is required');
       return false;
     }
     return true;
@@ -94,17 +94,16 @@ export default function TeamCreatePage() {
         }
       });
 
-      await api.post("/admin/teams", submitData, {
+      await api.post('/admin/teams', submitData, {
         headers: {
-          "Content-Type": "multipart/form-data",
+          'Content-Type': 'multipart/form-data',
         },
       });
 
-      toast.success("Team member added successfully!");
-      router.push("/admin/team");
+      toast.success('Team member added successfully!');
+      router.push('/admin/team');
     } catch (error: any) {
-      const message =
-        error?.response?.data?.message || "An unexpected error occurred";
+      const message = error?.response?.data?.message || 'An unexpected error occurred';
       setError(message);
       toast.error(message);
     } finally {
@@ -117,137 +116,139 @@ export default function TeamCreatePage() {
   };
 
   return (
-    <div className="px-4 sm:px-6 py-6">
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6 gap-3 sm:gap-0">
-        <div className="flex items-center gap-3">
-          <Users size={24} className="text-blue-500" />
-          <h1 className="text-lg sm:text-2xl font-bold text-white">
-            Add New Team
-          </h1>
-        </div>
-        <button
-          onClick={handleCancel}
-          disabled={isSubmitting}
-          className="self-start sm:self-auto p-2 hover:bg-gray-800 rounded-lg transition-colors disabled:opacity-50"
-          title="Back"
-        >
-          <ArrowLeft size={20} className="text-gray-300" />
-        </button>
+    <div className="p-6">
+    {/* Header */}
+    <div className="flex items-center justify-between mb-6">
+      {/* Kiri: Icon + Judul */}
+      <div className="flex items-center space-x-3">
+        <User size={24} className="text-blue-500" />
+        <h1 className="text-2xl font-bold text-white">Add New Team Info</h1>
       </div>
 
-      {/* Error */}
-      {error && (
-        <div className="mb-6 bg-red-900/50 border border-red-500 rounded-lg p-4 flex flex-col sm:flex-row sm:items-center gap-3">
-          <AlertCircle size={20} className="text-red-400" />
-          <span className="text-red-200">{error}</span>
-        </div>
-      )}
+      {/* Kanan: Tombol Back */}
+      <button
+        onClick={handleCancel}
+        disabled={isSubmitting}
+        className="p-2 hover:bg-gray-800 rounded-lg transition-colors disabled:opacity-50"
+        title="Back"
+      >
+        <ArrowLeft size={20} className="text-gray-300" />
+      </button>
+    </div>
 
-      {/* Form */}
-      <div className="bg-gray-800 rounded-xl p-4 sm:p-6">
-        <form onSubmit={handleSubmit} className="space-y-6">
-          {/* Photo */}
-          <div>
-            <label className="block text-sm font-medium text-gray-300 mb-2">
-              Photo
-            </label>
-            <div className="flex flex-col sm:flex-row sm:items-center gap-4">
-              <div className="w-24 h-24 bg-gray-700 rounded-full flex items-center justify-center overflow-hidden mx-auto sm:mx-0">
-                {imagePreview ? (
-                  <img
-                    src={imagePreview}
-                    alt="Preview"
-                    className="w-full h-full object-cover"
+
+        {/* Error */}
+        {error && (
+          <div className="mb-6 bg-red-900/50 border border-red-500 rounded-lg p-4 flex items-center space-x-3">
+            <AlertCircle size={20} className="text-red-400" />
+            <span className="text-red-200">{error}</span>
+          </div>
+        )}
+
+        {/* Form */}
+        <div className="bg-gray-800 rounded-xl p-6">
+          <form onSubmit={handleSubmit} className="space-y-6">
+            {/* Photo */}
+            <div>
+              <label className="block text-sm font-medium text-gray-300 mb-2">
+                Photo
+              </label>
+              <div className="flex items-center space-x-4">
+                <div className="w-24 h-24 bg-gray-700 rounded-lg flex items-center justify-center overflow-hidden">
+                  {imagePreview ? (
+                    <img
+                      src={imagePreview}
+                      alt="Preview"
+                      className="w-full h-full object-cover"
+                    />
+                  ) : (
+                    <Upload size={24} className="text-gray-400" />
+                  )}
+                </div>
+                <div>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={handleImageChange}
+                    disabled={isSubmitting}
+                    className="hidden"
+                    id="photo-upload"
                   />
-                ) : (
-                  <Upload size={24} className="text-gray-400" />
-                )}
-              </div>
-              <div className="text-center sm:text-left">
-                <input
-                  type="file"
-                  accept="image/*"
-                  onChange={handleImageChange}
-                  disabled={isSubmitting}
-                  className="hidden"
-                  id="icon-upload"
-                />
-                <label
-                  htmlFor="icon-upload"
-                  className={`bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-lg cursor-pointer transition-colors inline-block ${
-                    isSubmitting ? "opacity-50 cursor-not-allowed" : ""
-                  }`}
-                >
-                  Choose Photo
-                </label>
-                <p className="text-sm text-gray-400 mt-1">
-                  Upload an photo (max 5MB)
-                </p>
+                  <label
+                    htmlFor="photo-upload"
+                    className={`bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-lg cursor-pointer transition-colors inline-block ${
+                      isSubmitting ? 'opacity-50 cursor-not-allowed' : ''
+                    }`}
+                  >
+                    Choose Photo
+                  </label>
+                  <p className="text-sm text-gray-400 mt-1">
+                    Upload a photo for the team member (max 5MB)
+                  </p>
+                </div>
               </div>
             </div>
-          </div>
 
-          {/* Name */}
-          <div>
-            <label className="block text-sm font-medium text-gray-300 mb-2">
-              Name *
-            </label>
-            <input
-              type="text"
-              value={formData.name}
-              onChange={(e) => handleInputChange("name", e.target.value)}
-              placeholder="Enter Name"
-              disabled={isSubmitting}
-              className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-white disabled:opacity-50"
-            />
-          </div>
+            {/* Name */}
+            <div>
+              <label className="block text-sm font-medium text-gray-300 mb-2">
+                Name *
+              </label>
+              <input
+                type="text"
+                value={formData.name}
+                onChange={(e) => handleInputChange('name', e.target.value)}
+                placeholder="Enter team member name"
+                disabled={isSubmitting}
+                className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-white disabled:opacity-50"
+              />
+            </div>
 
-          {/* Position */}
-          <div>
-            <label className="block text-sm font-medium text-gray-300 mb-2">
-              Position *
-            </label>
-            <input
-              type="text"
-              value={formData.position}
-              onChange={(e) => handleInputChange("position", e.target.value)}
-              placeholder="Enter Position"
-              disabled={isSubmitting}
-              className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-white disabled:opacity-50"
-            />
-          </div>
+            {/* Position */}
+            <div>
+              <label className="block text-sm font-medium text-gray-300 mb-2">
+                Position *
+              </label>
+              <input
+                type="text"
+                value={formData.position}
+                onChange={(e) => handleInputChange('position', e.target.value)}
+                placeholder="Enter position"
+                disabled={isSubmitting}
+                className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-white disabled:opacity-50"
+              />
+            </div>
 
-          {/* Actions */}
-          <div className="flex flex-col sm:flex-row gap-3 pt-4">
-            <button
-              type="submit"
-              disabled={isSubmitting}
-              className="w-full sm:w-auto flex-1 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 disabled:opacity-50 px-4 py-2 rounded-lg flex items-center justify-center gap-2 transition-all text-white"
-            >
-              {isSubmitting ? (
-                <>
-                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
-                  <span>Saving...</span>
-                </>
-              ) : (
-                <>
-                  <Save size={16} />
-                  <span>Save Team</span>
-                </>
-              )}
-            </button>
-            <button
-              type="button"
-              onClick={handleCancel}
-              disabled={isSubmitting}
-              className="w-full sm:w-auto flex-1 bg-gray-600 hover:bg-gray-700 disabled:opacity-50 px-4 py-2 rounded-lg transition-colors text-white"
-            >
-              Cancel
-            </button>
-          </div>
-        </form>
+            {/* Actions */}
+            <div className="flex space-x-4 pt-4">
+              <button
+                type="submit"
+                disabled={isSubmitting}
+                className="flex-1 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 disabled:opacity-50 px-4 py-2 rounded-lg flex items-center justify-center space-x-2 transition-all text-white"
+              >
+                {isSubmitting ? (
+                  <>
+                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                    <span>Saving...</span>
+                  </>
+                ) : (
+                  <>
+                    <Save size={16} />
+                    <span>Save Team Member</span>
+                  </>
+                )}
+              </button>
+              <button
+                type="button"
+                onClick={handleCancel}
+                disabled={isSubmitting}
+                className="flex-1 bg-gray-600 hover:bg-gray-700 disabled:opacity-50 px-4 py-2 rounded-lg transition-colors text-white"
+              >
+                Cancel
+              </button>
+            </div>
+          </form>
+        </div>
       </div>
-    </div>
   );
 }
