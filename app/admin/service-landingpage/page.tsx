@@ -7,7 +7,6 @@ import toast from 'react-hot-toast';
 
 type ServiceItem = {
   id: number;
-  title: string;
   name_service: string;
   description: string;
 };
@@ -43,7 +42,6 @@ export default function ServicePage() {
 
   useEffect(() => {
     const filtered = data.filter(item =>
-      item.title?.toLowerCase().includes(searchTerm.toLowerCase()) ||
       item.name_service?.toLowerCase().includes(searchTerm.toLowerCase()) ||
       item.description?.toLowerCase().includes(searchTerm.toLowerCase())
     );
@@ -74,7 +72,7 @@ export default function ServicePage() {
     try {
       await api.delete(`/admin/services-landing-pages/${confirmDeleteItem.id}`);
       setData(prev => prev.filter(service => service.id !== confirmDeleteItem.id));
-      toast.success(`"${confirmDeleteItem.title}" deleted successfully.`);
+      toast.success(`"${confirmDeleteItem.name_service}" deleted successfully.`);
     } catch (error) {
       console.error('Error deleting service:', error);
       toast.error('Failed to delete service.');
@@ -173,7 +171,6 @@ export default function ServicePage() {
             <table className="min-w-full divide-y divide-gray-700 bg-gray-800 rounded-xl overflow-hidden">
               <thead className="bg-gray-900">
                 <tr>
-                  <th className="px-4 py-3 text-left text-sm font-semibold text-gray-300">Title</th>
                   <th className="px-4 py-3 text-left text-sm font-semibold text-gray-300">Service Name</th>
                   <th className="px-4 py-3 text-left text-sm font-semibold text-gray-300">Description</th>
                   <th className="px-4 py-3 text-center text-sm font-semibold text-gray-300">Actions</th>
@@ -182,7 +179,6 @@ export default function ServicePage() {
               <tbody className="divide-y divide-gray-700">
                 {filteredData.map((service) => (
                   <tr key={service.id} className="hover:bg-gray-750 transition">
-                    <td className="px-4 py-3 text-sm text-gray-100">{service.title}</td>
                     <td className="px-4 py-3 text-sm text-gray-200 whitespace-pre-line">{service.name_service}</td>
                     <td className="px-4 py-3 text-sm text-gray-200 whitespace-pre-line">{service.description || 'No description'}</td>
                     <td className="px-4 py-3 text-sm text-center">
@@ -229,7 +225,7 @@ export default function ServicePage() {
         <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50">
           <div className="bg-gray-900 border border-gray-700 p-6 rounded-xl shadow-xl w-full max-w-md">
             <h2 className="text-lg font-semibold text-white mb-2">
-              Delete "{confirmDeleteItem.title}"?
+              Delete "{confirmDeleteItem.name_service}"?
             </h2>
             <p className="text-sm text-gray-400 mb-4">
               Are you sure you want to delete this service? This action cannot be undone.

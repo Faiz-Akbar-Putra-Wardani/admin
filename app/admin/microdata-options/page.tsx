@@ -7,7 +7,6 @@ import toast from "react-hot-toast";
 
 type MicrodataOptionItem = {
   id: number;
-  title: string;
   name_title: string;
   description: string;
 };
@@ -49,7 +48,6 @@ export default function microdataOptionPage() {
 
   const filteredData = data.filter(
     (item) =>
-      item.title?.toLowerCase().includes(searchTerm.toLowerCase()) ||
       item.name_title?.toLowerCase().includes(searchTerm.toLowerCase()) ||
       item.description?.toLowerCase().includes(searchTerm.toLowerCase())
   );
@@ -68,7 +66,7 @@ export default function microdataOptionPage() {
     try {
       await api.delete(`admin/microdata-options/${confirmDeleteItem.id}`);
       setData((prev) => prev.filter((option) => option.id !== confirmDeleteItem.id));
-      toast.success(`${confirmDeleteItem.title} deleted successfully.`);
+      toast.success(`${confirmDeleteItem.name_title} deleted successfully.`);
     } catch (error: any) {
       console.error("Error deleting microdata option:", error);
       const errorMessage = error?.response?.data?.message || "Failed to delete microdata option.";
@@ -166,9 +164,8 @@ export default function microdataOptionPage() {
                 >
                   <div className="mb-4">
                     <h3 className="text-lg font-semibold text-white mb-1">
-                      {option.title}
+                      {option.name_title}
                     </h3>
-                    <p className="text-gray-400 text-sm">{option.name_title}</p>
                     <p className="text-gray-500 text-xs line-clamp-3">
                       {option.description}
                     </p>
@@ -211,7 +208,7 @@ export default function microdataOptionPage() {
         <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4">
           <div className="bg-gray-900 border border-gray-700 p-6 rounded-xl shadow-xl w-full max-w-md">
             <h2 className="text-lg font-semibold text-white mb-2">
-              Delete {confirmDeleteItem.title}?
+              Delete {confirmDeleteItem.name_title}?
             </h2>
             <p className="text-sm text-gray-400 mb-4">
               Are you sure you want to delete this microdata option? This action cannot be undone.

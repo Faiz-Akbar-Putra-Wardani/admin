@@ -17,7 +17,6 @@ import toast from "react-hot-toast";
 
 type PositionItem = {
   id: number;
-  title: string;
   position: string;
   description: string;
 };
@@ -55,7 +54,6 @@ export default function PositionPage() {
   useEffect(() => {
     const filtered = data.filter(
       (item) =>
-        item.title?.toLowerCase().includes(searchTerm.toLowerCase()) ||
         item.position?.toLowerCase().includes(searchTerm.toLowerCase()) ||
         item.description?.toLowerCase().includes(searchTerm.toLowerCase())
     );
@@ -78,7 +76,7 @@ export default function PositionPage() {
       setData((prev) =>
         prev.filter((position) => position.id !== confirmDeleteItem.id)
       );
-      toast.success(`${confirmDeleteItem.title} deleted successfully.`);
+      toast.success(`${confirmDeleteItem.position} deleted successfully.`);
     } catch (error) {
       console.error("Error deleting position:", error);
       toast.error("Failed to delete position.");
@@ -195,9 +193,6 @@ export default function PositionPage() {
                 <thead className="bg-gray-900">
                   <tr>
                     <th className="px-2 py-3 text-left text-sm font-semibold text-gray-300 sm:px-4">
-                      Title
-                    </th>
-                    <th className="px-2 py-3 text-left text-sm font-semibold text-gray-300 sm:px-4">
                       Position
                     </th>
                     <th className="px-2 py-3 text-left text-sm font-semibold text-gray-300 sm:px-4">
@@ -214,9 +209,6 @@ export default function PositionPage() {
                       key={position.id}
                       className="hover:bg-gray-750 transition"
                     >
-                      <td className="px-2 py-3 text-sm text-gray-100 sm:px-4">
-                        {position.title}
-                      </td>
                       <td className="px-2 py-3 text-sm text-gray-200 sm:px-4">
                         {position.position}
                       </td>
@@ -270,7 +262,7 @@ export default function PositionPage() {
           <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50">
             <div className="bg-gray-900 border border-gray-700 p-6 rounded-xl shadow-xl w-full max-w-md">
               <h2 className="text-lg font-semibold text-white mb-2">
-                Delete "{confirmDeleteItem.title}"?
+                Delete "{confirmDeleteItem.position}"?
               </h2>
               <p className="text-sm text-gray-400 mb-4">
                 Are you sure you want to delete this position? This action

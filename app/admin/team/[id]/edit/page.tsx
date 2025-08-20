@@ -139,7 +139,7 @@ export default function NewCareerPage() {
               Image
             </label>
             <div className="flex items-center space-x-4">
-              <div className="w-24 h-24 bg-gray-700 rounded-lg flex items-center justify-center overflow-hidden">
+              <div className="w-24 h-24 bg-gray-700 rounded-full flex items-center justify-center overflow-hidden">
                 {imagePreview ? (
                   <img
                     src={imagePreview}

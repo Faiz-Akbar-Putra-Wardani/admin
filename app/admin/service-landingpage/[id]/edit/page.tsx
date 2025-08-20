@@ -12,12 +12,10 @@ export default function ServiceEditPage() {
 
   const [formData, setFormData] = useState<{
     id: string;
-    title: string;
     name_service: string;
     description: string;
   }>({
     id: '',
-    title: '',
     name_service: '',
     description: '',
   });
@@ -35,7 +33,6 @@ export default function ServiceEditPage() {
 
         setFormData({
           id: serviceData.id,
-          title: serviceData.title || '',
           name_service: serviceData.name_service || '',
           description: serviceData.description || '',
         });
@@ -61,10 +58,6 @@ export default function ServiceEditPage() {
   };
 
   const validateForm = () => {
-    if (!formData.title.trim()) {
-      setError('Judul wajib diisi');
-      return false;
-    }
     if (!formData.name_service.trim()) {
       setError('Nama layanan wajib diisi');
       return false;
@@ -86,7 +79,6 @@ export default function ServiceEditPage() {
 
     try {
       const submitData = new FormData();
-      submitData.append('title', formData.title);
       submitData.append('name_service', formData.name_service);
       submitData.append('description', formData.description);
       submitData.append('_method', 'PUT');
@@ -150,18 +142,6 @@ export default function ServiceEditPage() {
 
       <div className="bg-gray-800 rounded-xl p-6">
         <form onSubmit={handleSubmit} className="space-y-6">
-          {/* Title */}
-          <div>
-            <label className="block text-sm font-medium text-gray-300 mb-2">Judul *</label>
-            <input
-              type="text"
-              value={formData.title}
-              onChange={(e) => handleInputChange('title', e.target.value)}
-              disabled={isSubmitting}
-              className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white"
-            />
-          </div>
-
           {/* Name Service */}
           <div>
             <label className="block text-sm font-medium text-gray-300 mb-2">Nama Layanan *</label>
