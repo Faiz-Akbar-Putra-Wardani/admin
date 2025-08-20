@@ -25,12 +25,11 @@ export default function microdataOptionPage() {
     setError(null);
     try {
       const response = await api.get("admin/microdata-options");
-      // Menangani struktur data respons yang mungkin bervariasi
+    
       const microdataOptionData = response.data.data || response.data;
       if (Array.isArray(microdataOptionData)) {
         setData(microdataOptionData);
       } else {
-        // Jika data bukan array, mungkin respons kosong atau error
         setData([]);
       }
     } catch (error: any) {
