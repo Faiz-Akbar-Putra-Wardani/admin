@@ -8,8 +8,8 @@ import {
   Users,
   RefreshCw,
   AlertCircle,
-  ArrowLeft,
   Info,
+  FileText,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import api from "../../../lib/api";
@@ -29,11 +29,12 @@ export default function PositionPage() {
   const [filteredData, setFilteredData] = useState<PositionItem[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [confirmDeleteItem, setConfirmDeleteItem] =
+    useState<PositionItem | null>(null);
 
   const fetchData = async () => {
     setLoading(true);
     setError(null);
-
     try {
       const response = await api.get("/positions");
       const positionData = response.data.data || response.data;
@@ -65,20 +66,9 @@ export default function PositionPage() {
     router.push("/admin/position/new");
   };
 
-  interface EditHandler {
-    (item: PositionItem): void;
-  }
-
-  const handleEdit: EditHandler = (item) => {
+  const handleEdit = (item: PositionItem) => {
     router.push(`/admin/position/${item.id}/edit`);
   };
-
-  interface DeleteHandler {
-    (item: PositionItem): Promise<void>;
-  }
-
-  const [confirmDeleteItem, setConfirmDeleteItem] =
-    useState<PositionItem | null>(null);
 
   const handleDeleteConfirm = async () => {
     if (!confirmDeleteItem) return;
@@ -106,7 +96,7 @@ export default function PositionPage() {
     <div className="p-4 md:p-6 min-h-screen bg-gray-900 text-white">
       <div className="max-w-6xl mx-auto">
         {/* Header */}
-        <div className="flex flex-col md:flex-row items-center justify-between mb-6 gap-4">
+        <div className="flex items-center justify-between mb-6">
           <div className="flex items-center space-x-3">
             <Info size={24} className="text-blue-500" />
             <h1 className="text-2xl font-bold">Position Management</h1>
@@ -119,17 +109,31 @@ export default function PositionPage() {
               <RefreshCw size={16} className={loading ? "animate-spin" : ""} />
             </button>
           </div>
+
+          {/* Tombol Add - Desktop */}
           <button
             onClick={handleAdd}
             disabled={loading}
-            className="bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 disabled:opacity-50 px-4 py-2 rounded-lg flex items-center space-x-2 transition-all w-full md:w-auto"
+            className="hidden md:flex bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 disabled:opacity-50 px-4 py-2 rounded-lg items-center space-x-2 transition-all"
           >
             <Plus size={16} />
             <span>Add Position</span>
           </button>
         </div>
 
-        {/* Error Message */}
+        {/* Tombol Add - Mobile */}
+        <div className="md:hidden mb-4">
+          <button
+            onClick={handleAdd}
+            disabled={loading}
+            className="w-full bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 disabled:opacity-50 px-4 py-2 rounded-lg flex items-center justify-center space-x-2 transition-all"
+          >
+            <Plus size={16} />
+            <span>Add Position</span>
+          </button>
+        </div>
+
+        {/* Error */}
         {error && (
           <div className="mb-6 bg-red-900/50 border border-red-500 rounded-lg p-4 flex items-center space-x-3">
             <AlertCircle size={20} className="text-red-400" />
@@ -155,7 +159,7 @@ export default function PositionPage() {
           </div>
         </div>
 
-        {/* Loading State */}
+        {/* Loading */}
         {loading && (
           <div className="bg-gray-800 rounded-xl p-8 text-center">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto mb-4"></div>
@@ -166,7 +170,7 @@ export default function PositionPage() {
         {/* Content */}
         {!loading && filteredData.length === 0 ? (
           <div className="bg-gray-800 rounded-xl p-8 text-center">
-            <Users size={48} className="mx-auto text-gray-600 mb-4" />
+            <FileText size={48} className="mx-auto text-gray-600 mb-4" />
             <h3 className="text-lg font-semibold text-gray-300 mb-2">
               {searchTerm ? "No positions found" : "No positions yet"}
             </h3>
@@ -190,16 +194,16 @@ export default function PositionPage() {
               <table className="min-w-full divide-y divide-gray-700 bg-gray-800 rounded-xl overflow-hidden">
                 <thead className="bg-gray-900">
                   <tr>
-                    <th className="px-2 py-3 text-left text-sm font-semibold text-gray-300 md:px-4">
+                    <th className="px-2 py-3 text-left text-sm font-semibold text-gray-300 sm:px-4">
                       Title
                     </th>
-                    <th className="px-2 py-3 text-left text-sm font-semibold text-gray-300 md:px-4">
+                    <th className="px-2 py-3 text-left text-sm font-semibold text-gray-300 sm:px-4">
                       Position
                     </th>
-                    <th className="px-2 py-3 text-left text-sm font-semibold text-gray-300 md:px-4">
+                    <th className="px-2 py-3 text-left text-sm font-semibold text-gray-300 sm:px-4">
                       Description
                     </th>
-                    <th className="px-2 py-3 text-center text-sm font-semibold text-gray-300 md:px-4">
+                    <th className="px-2 py-3 text-center text-sm font-semibold text-gray-300 sm:px-4">
                       Actions
                     </th>
                   </tr>
@@ -210,21 +214,21 @@ export default function PositionPage() {
                       key={position.id}
                       className="hover:bg-gray-750 transition"
                     >
-                      <td className="px-2 py-3 text-sm text-gray-100 md:px-4">
+                      <td className="px-2 py-3 text-sm text-gray-100 sm:px-4">
                         {position.title}
                       </td>
-                      <td className="px-2 py-3 text-sm text-gray-200 md:px-4">
+                      <td className="px-2 py-3 text-sm text-gray-200 sm:px-4">
                         {position.position}
                       </td>
-                      <td className="px-2 py-3 text-sm text-gray-200 whitespace-pre-line md:px-4">
+                      <td className="px-2 py-3 text-sm text-gray-200 whitespace-pre-line sm:px-4">
                         {position.description}
                       </td>
-                      <td className="px-2 py-3 text-sm text-center md:px-4">
+                      <td className="px-2 py-3 text-sm text-center sm:px-4">
                         <div className="flex justify-center space-x-2">
                           <button
                             onClick={() => handleEdit(position)}
                             disabled={loading}
-                            className="bg-blue-600 hover:bg-blue-700 text-white py-1 px-2 rounded-lg flex items-center justify-center text-xs md:text-sm disabled:opacity-50"
+                            className="bg-blue-600 hover:bg-blue-700 text-white py-1 px-2 rounded-lg flex items-center justify-center text-xs sm:text-sm disabled:opacity-50"
                           >
                             <Edit size={12} className="mr-1" />
                             Edit
@@ -232,7 +236,7 @@ export default function PositionPage() {
                           <button
                             onClick={() => setConfirmDeleteItem(position)}
                             disabled={loading}
-                            className="bg-red-600 hover:bg-red-700 text-white py-1 px-2 rounded-lg flex items-center justify-center text-xs md:text-sm disabled:opacity-50"
+                            className="bg-red-600 hover:bg-red-700 text-white py-1 px-2 rounded-lg flex items-center justify-center text-xs sm:text-sm disabled:opacity-50"
                           >
                             <Trash2 size={12} className="mr-1" />
                             Delete
@@ -260,37 +264,37 @@ export default function PositionPage() {
             </div>
           </div>
         )}
-      </div>
 
-      {/* Delete Confirmation Modal */}
-      {confirmDeleteItem && (
-        <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50">
-          <div className="bg-gray-900 border border-gray-700 p-6 rounded-xl shadow-xl w-full max-w-md">
-            <h2 className="text-lg font-semibold text-white mb-2">
-              Delete "{confirmDeleteItem.title}"?
-            </h2>
-            <p className="text-sm text-gray-400 mb-4">
-              Are you sure you want to delete this position? This action cannot
-              be undone.
-            </p>
-            <div className="flex justify-end space-x-2">
-              <button
-                onClick={() => setConfirmDeleteItem(null)}
-                className="px-4 py-2 text-sm text-gray-300 hover:text-white hover:bg-gray-700 rounded-lg"
-              >
-                Canceel
-              </button>
-              <button
-                onClick={handleDeleteConfirm}
-                disabled={loading}
-                className="px-4 py-2 text-sm bg-red-600 hover:bg-red-700 text-white rounded-lg disabled:opacity-50"
-              >
-                {loading ? "Deleting..." : "Delete"}
-              </button>
+        {/* Delete Confirmation Modal */}
+        {confirmDeleteItem && (
+          <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50">
+            <div className="bg-gray-900 border border-gray-700 p-6 rounded-xl shadow-xl w-full max-w-md">
+              <h2 className="text-lg font-semibold text-white mb-2">
+                Delete "{confirmDeleteItem.title}"?
+              </h2>
+              <p className="text-sm text-gray-400 mb-4">
+                Are you sure you want to delete this position? This action
+                cannot be undone.
+              </p>
+              <div className="flex justify-end space-x-2">
+                <button
+                  onClick={() => setConfirmDeleteItem(null)}
+                  className="px-4 py-2 text-sm text-gray-300 hover:text-white hover:bg-gray-700 rounded-lg"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={handleDeleteConfirm}
+                  disabled={loading}
+                  className="px-4 py-2 text-sm bg-red-600 hover:bg-red-700 text-white rounded-lg disabled:opacity-50"
+                >
+                  {loading ? "Deleting..." : "Delete"}
+                </button>
+              </div>
             </div>
           </div>
-        </div>
-      )}
+        )}
+      </div>
     </div>
   );
 }
