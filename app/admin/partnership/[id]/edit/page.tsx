@@ -12,8 +12,10 @@ export default function PartnershipUpdatePage() {
   const partnershipId = params.id;
 
   const [formData, setFormData] = useState<{
+    name: string;
     logo: File | null;
   }>({
+    name: "",
     logo: null,
   });
 
@@ -22,7 +24,6 @@ export default function PartnershipUpdatePage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  // Fetch partnership data by ID
   useEffect(() => {
     const fetchPartnership = async () => {
       try {
@@ -30,6 +31,7 @@ export default function PartnershipUpdatePage() {
         const partnershipData = res.data.data || res.data;
 
         setFormData({
+          name: partnershipData.name || "",
           logo: null,
         });
 
@@ -76,7 +78,11 @@ export default function PartnershipUpdatePage() {
   };
 
   const validateForm = () => {
-    return true; // No required fields, as logo is optional on update
+    if (!formData.name.trim()) {
+      setError("Name is required");
+      return false;
+    }
+    return true;
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -89,6 +95,7 @@ export default function PartnershipUpdatePage() {
 
     try {
       const submitData = new FormData();
+      submitData.append("name", formData.name);
       if (formData.logo) {
         submitData.append("logo", formData.logo);
       }
@@ -195,6 +202,24 @@ export default function PartnershipUpdatePage() {
               </div>
             </div>
           </div>
+          {/* Name */}
+          <div>
+            <label className="block text-sm font-medium text-gray-300 mb-2">
+              Partnership Name *
+            </label>
+            <input
+              type="text"
+              value={formData.name}
+              onChange={(e) =>
+                setFormData((prev) => ({ ...prev, name: e.target.value }))
+              }
+              disabled={isSubmitting}
+              className="w-full px-4 py-2 rounded-lg bg-gray-700 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              placeholder="Enter partnership name"
+              required
+            />
+          </div>
+          
 
           {/* Actions */}
           <div className="flex space-x-4 pt-4">

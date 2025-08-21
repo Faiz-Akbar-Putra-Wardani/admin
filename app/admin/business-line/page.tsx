@@ -7,7 +7,6 @@ import toast from 'react-hot-toast';
 
 type BusinessLine = {
   id: number;
-  title: string;
   icon?: string;
   icon_url?: string;
   title_business: string;
@@ -44,7 +43,6 @@ export default function BussinesLinePage() {
 
   useEffect(() => {
     const filtered = data.filter(item =>
-      item.title?.toLowerCase().includes(searchTerm.toLowerCase()) ||
       item.title_business?.toLowerCase().includes(searchTerm.toLowerCase()) ||
       item.description?.toLowerCase().includes(searchTerm.toLowerCase())
     );
@@ -67,7 +65,7 @@ export default function BussinesLinePage() {
     try {
       await api.delete(`/admin/business-lines/${confirmDeleteItem.id}`);
       setData(prev => prev.filter(team => team.id !== confirmDeleteItem.id));
-      toast.success(`${confirmDeleteItem.title} deleted successfully.`);
+      toast.success(`${confirmDeleteItem.title_business} deleted successfully.`);
     } catch (error) {
       console.error('Error deleting team member:', error);
       toast.error('Failed to delete team member.');
@@ -194,11 +192,8 @@ export default function BussinesLinePage() {
                 {/* Info */}
                 <div className="text-center mb-4">
                   <h3 className="text-lg font-semibold text-white mb-1">
-                    {member.title}
-                  </h3>
-                  <p className="text-gray-400 text-sm mb-2">
                     {member.title_business}
-                  </p>
+                  </h3>
                   <p className="text-gray-600 text-sm">
                     {member.description}
                   </p>
@@ -245,7 +240,7 @@ export default function BussinesLinePage() {
         <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50">
           <div className="bg-gray-900 border border-gray-700 p-6 rounded-xl shadow-xl w-full max-w-md">
             <h2 className="text-lg font-semibold text-white mb-2">
-              Delete {confirmDeleteItem.title}?
+              Delete {confirmDeleteItem.title_business}?
             </h2>
             <p className="text-sm text-gray-400 mb-4">
               Are you sure you want to delete this team member? This action cannot be undone..

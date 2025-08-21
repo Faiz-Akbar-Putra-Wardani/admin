@@ -17,10 +17,12 @@ export default function PartnershipCreatePage() {
   }, [router]);
 
   interface PartnershipFormData {
+    name: string;
     logo: File | null;
   }
 
   const [formData, setFormData] = useState<PartnershipFormData>({
+    name: "",
     logo: null,
   });
 
@@ -54,7 +56,15 @@ export default function PartnershipCreatePage() {
     setError(null);
   };
 
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+  };
+
   const validateForm = () => {
+    if (!formData.name.trim()) {
+      setError("Name is required");
+      return false;
+    }
     if (!formData.logo) {
       setError("Logo is required");
       return false;
@@ -128,8 +138,8 @@ export default function PartnershipCreatePage() {
 
       {/* Form */}
       <div className="bg-gray-800 rounded-xl p-6">
+        
         <form onSubmit={handleSubmit} className="space-y-6">
-          {/* Logo */}
           <div>
             <label className="block text-sm font-medium text-gray-300 mb-2">
               Logo *
@@ -169,6 +179,24 @@ export default function PartnershipCreatePage() {
               </div>
             </div>
           </div>
+          {/* Name */}
+          <div>
+            <label className="block text-sm font-medium text-gray-300 mb-2">
+              Partnership Name *
+            </label>
+            <input
+              type="text"
+              name="name"
+              value={formData.name}
+              onChange={handleInputChange}
+              disabled={isSubmitting}
+              placeholder="Enter partnership name"
+              className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-white disabled:opacity-50"
+            />
+          </div>
+
+          {/* Logo */}
+          
 
           {/* Actions */}
           <div className="flex space-x-4 pt-4">

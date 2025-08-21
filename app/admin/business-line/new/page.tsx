@@ -18,14 +18,12 @@ export default function BusinessLineCreatePage() {
 
   interface BusinessLineFormData {
     icon: File | null;
-    title: string;
     title_business: string;
     description: string;
   }
 
   const [formData, setFormData] = useState<BusinessLineFormData>({
     icon: null,
-    title: "",
     title_business: "",
     description: "",
   });
@@ -72,10 +70,7 @@ export default function BusinessLineCreatePage() {
   };
 
   const validateForm = () => {
-    if (!formData.title.trim()) {
-      setError("Title is required");
-      return false;
-    }
+
     if (!formData.title_business.trim()) {
       setError("Title Business is required");
       return false;
@@ -195,21 +190,6 @@ export default function BusinessLineCreatePage() {
                 </p>
               </div>
             </div>
-          </div>
-
-          {/* Title */}
-          <div>
-            <label className="block text-sm font-medium text-gray-300 mb-2">
-              Title *
-            </label>
-            <input
-              type="text"
-              value={formData.title}
-              onChange={(e) => handleInputChange("title", e.target.value)}
-              placeholder="Enter title"
-              disabled={isSubmitting}
-              className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-white disabled:opacity-50"
-            />
           </div>
 
           {/* Title Business */}

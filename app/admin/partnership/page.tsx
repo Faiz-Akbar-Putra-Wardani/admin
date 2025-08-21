@@ -16,6 +16,7 @@ import toast from "react-hot-toast";
 
 type Partnership = {
   id: number;
+  name: string; 
   logo?: string;
   logo_url?: string;
 };
@@ -52,7 +53,7 @@ export default function PartnershipPage() {
 
   useEffect(() => {
     const filtered = data.filter((item) =>
-      item.logo?.toLowerCase().includes(searchTerm.toLowerCase())
+      item.name?.toLowerCase().includes(searchTerm.toLowerCase())
     );
     setFilteredData(filtered);
   }, [data, searchTerm]);
@@ -73,7 +74,7 @@ export default function PartnershipPage() {
       setData((prev) =>
         prev.filter((partnership) => partnership.id !== confirmDeleteItem.id)
       );
-      toast.success("Partnership berhasil dihapus.");
+      toast.success(`${confirmDeleteItem.name} berhasil dihapus.`);
     } catch (error) {
       console.error("Error deleting partnership:", error);
       toast.error("Gagal menghapus partnership.");
@@ -182,7 +183,7 @@ export default function PartnershipPage() {
                     {partnership.logo_url ? (
                       <img
                         src={partnership.logo_url}
-                        alt="Partnership logo"
+                        alt={partnership.name}
                         className="w-full h-full object-cover"
                       />
                     ) : (
@@ -195,7 +196,7 @@ export default function PartnershipPage() {
                   {/* Info */}
                   <div className="text-center mb-4">
                     <h3 className="text-lg font-semibold text-white mb-1">
-                      Partnership #{partnership.id}
+                      {partnership.name}
                     </h3>
                   </div>
 
@@ -242,11 +243,11 @@ export default function PartnershipPage() {
         <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50">
           <div className="bg-gray-900 border border-gray-700 p-6 rounded-xl shadow-xl w-full max-w-md">
             <h2 className="text-lg font-semibold text-white mb-2">
-              Delete Partnership #{confirmDeleteItem.id}?
+              Delete {confirmDeleteItem.name}?
             </h2>
             <p className="text-sm text-gray-400 mb-4">
-              Are you sure you want to delete this partnership? This action
-              cannot be undone.
+              Are you sure you want to delete "{confirmDeleteItem.name}"? This
+              action cannot be undone.
             </p>
             <div className="flex justify-end space-x-2">
               <button

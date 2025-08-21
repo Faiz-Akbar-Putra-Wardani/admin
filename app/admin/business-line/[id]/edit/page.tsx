@@ -7,7 +7,6 @@ import toast from "react-hot-toast";
 
 type BusinessLine = {
   id: number;
-  title: string;
   icon?: string;
   icon_url?: string;
   title_business: string;
@@ -73,10 +72,6 @@ export default function BusinessLineEditPage() {
   };
 
   const validate = () => {
-    if (!businessLine?.title.trim()) {
-      setError("Title is required");
-      return false;
-    }
     if (!businessLine?.title_business.trim()) {
       setError("Title Business is required");
       return false;
@@ -105,7 +100,6 @@ export default function BusinessLineEditPage() {
 
     try {
       const fd = new FormData();
-      fd.append("title", businessLine.title);
       fd.append("title_business", businessLine.title_business);
       fd.append("description", businessLine.description);
 
@@ -228,22 +222,6 @@ export default function BusinessLineEditPage() {
               </div>
             )}
 
-            {/* Title */}
-            <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">
-                Title
-              </label>
-              <input
-                value={businessLine.title}
-                onChange={(e) =>
-                  setBusinessLine({
-                    ...businessLine,
-                    title: e.target.value,
-                  })
-                }
-                className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white"
-              />
-            </div>
 
             {/* Title Business */}
             <div>
