@@ -8,7 +8,7 @@ import toast from "react-hot-toast";
 
 export default function TeamUpdatePage() {
   const router = useRouter();
-  const params = useParams(); // ambil id dari URL
+  const params = useParams();
   const { id } = params;
 
   useEffect(() => {
