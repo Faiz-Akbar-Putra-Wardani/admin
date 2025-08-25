@@ -1,4 +1,3 @@
-// app/admin/portofolio-categories/page.tsx
 "use client";
 import React, { useState, useEffect } from "react";
 import {
@@ -162,90 +161,94 @@ export default function PortofolioCategoriesPage() {
               </button>
             )}
           </div>
-        ) : !loading && (
-          <>
-            {/* Table for desktop */}
-            <div className="hidden sm:block overflow-x-auto">
-              <table className="min-w-full divide-y divide-gray-700 bg-gray-800 rounded-xl overflow-hidden">
-                <thead className="bg-gray-900">
-                  <tr>
-                    <th className="px-4 py-3 text-left text-sm font-semibold text-gray-300">
-                      Name
-                    </th>
-                    <th className="px-4 py-3 text-right text-sm font-semibold text-gray-300">
-                      Actions
-                    </th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-gray-700">
-                  {filteredCategories.map((category) => (
-                    <tr
-                      key={category.id}
-                      className="hover:bg-gray-750 transition"
-                    >
-                      <td className="px-4 py-3 text-sm text-gray-100">
-                        {category.name}
-                      </td>
-                      <td className="px-4 py-3 text-sm text-right">
-                        <div className="flex justify-end space-x-3">
-                          <button
-                            onClick={() =>
-                              router.push(
-                                `/admin/portofolio-categories/${category.id}/edit`
-                              )
-                            }
-                            disabled={loading}
-                            className="bg-blue-600 hover:bg-blue-700 text-white py-1 px-4 rounded-lg flex items-center justify-center text-sm disabled:opacity-50"
-                          >
-                            <Edit size={14} className="mr-1" /> Edit
-                          </button>
-                          <button
-                            onClick={() => setConfirmDeleteItem(category)}
-                            disabled={loading}
-                            className="bg-red-600 hover:bg-red-700 text-white py-1 px-4 rounded-lg flex items-center justify-center text-sm disabled:opacity-50"
-                          >
-                            <Trash2 size={14} className="mr-1" /> Delete
-                          </button>
-                        </div>
-                      </td>
+        ) : (
+          !loading && (
+            <>
+              {/* Table for desktop */}
+              <div className="hidden sm:block overflow-x-auto">
+                <table className="min-w-full divide-y divide-gray-700 bg-gray-800 rounded-xl overflow-hidden">
+                  <thead className="bg-gray-900">
+                    <tr>
+                      <th className="px-4 py-3 text-left text-sm font-semibold text-gray-300">
+                        Name
+                      </th>
+                      <th className="px-4 pr-20 py-3 text-right text-sm font-semibold text-gray-300">
+                        Actions
+                      </th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+                  </thead>
+                  <tbody className="divide-y divide-gray-700">
+                    {filteredCategories.map((category) => (
+                      <tr
+                        key={category.id}
+                        className="hover:bg-gray-750 transition"
+                      >
+                        <td className="px-4 py-3 text-sm text-gray-100">
+                          {category.name}
+                        </td>
+                        <td className="px-4 py-3 text-sm text-right">
+                          <div className="inline-flex space-x-3">
+                            <button
+                              onClick={() =>
+                                router.push(
+                                  `/admin/portofolio-categories/${category.id}/edit`
+                                )
+                              }
+                              disabled={loading}
+                              className="bg-blue-600 hover:bg-blue-700 text-white py-1 px-4 rounded-lg flex items-center justify-center text-sm disabled:opacity-50"
+                            >
+                              <Edit size={14} className="mr-1" /> Edit
+                            </button>
+                            <button
+                              onClick={() => setConfirmDeleteItem(category)}
+                              disabled={loading}
+                              className="bg-red-600 hover:bg-red-700 text-white py-1 px-4 rounded-lg flex items-center justify-center text-sm disabled:opacity-50"
+                            >
+                              <Trash2 size={14} className="mr-1" /> Delete
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
 
-            {/* Card view for mobile */}
-            <div className="sm:hidden space-y-4">
-              {filteredCategories.map((category) => (
-                <div
-                  key={category.id}
-                  className="bg-gray-800 p-4 rounded-lg space-y-2"
-                >
-                  <p className="text-gray-100 font-semibold">{category.name}</p>
-                  <div className="flex gap-2 pt-2">
-                    <button
-                      onClick={() =>
-                        router.push(
-                          `/admin/portofolio-categories/${category.id}/edit`
-                        )
-                      }
-                      disabled={loading}
-                      className="flex-1 bg-blue-600 hover:bg-blue-700 text-white py-1 px-2 rounded-lg flex items-center justify-center text-sm disabled:opacity-50"
-                    >
-                      <Edit size={14} className="mr-1" /> Edit
-                    </button>
-                    <button
-                      onClick={() => setConfirmDeleteItem(category)}
-                      disabled={loading}
-                      className="flex-1 bg-red-600 hover:bg-red-700 text-white py-1 px-2 rounded-lg flex items-center justify-center text-sm disabled:opacity-50"
-                    >
-                      <Trash2 size={14} className="mr-1" /> Delete
-                    </button>
+              {/* Card view for mobile */}
+              <div className="sm:hidden space-y-4">
+                {filteredCategories.map((category) => (
+                  <div
+                    key={category.id}
+                    className="bg-gray-800 p-4 rounded-lg space-y-2"
+                  >
+                    <p className="text-gray-100 font-semibold">
+                      {category.name}
+                    </p>
+                    <div className="flex justify-end gap-2 pt-2">
+                      <button
+                        onClick={() =>
+                          router.push(
+                            `/admin/portofolio-categories/${category.id}/edit`
+                          )
+                        }
+                        disabled={loading}
+                        className="flex-1 bg-blue-600 hover:bg-blue-700 text-white py-1 px-2 rounded-lg flex items-center justify-center text-sm disabled:opacity-50"
+                      >
+                        <Edit size={14} className="mr-1" /> Edit
+                      </button>
+                      <button
+                        onClick={() => setConfirmDeleteItem(category)}
+                        disabled={loading}
+                        className="flex-1 bg-red-600 hover:bg-red-700 text-white py-1 px-2 rounded-lg flex items-center justify-center text-sm disabled:opacity-50"
+                      >
+                        <Trash2 size={14} className="mr-1" /> Delete
+                      </button>
+                    </div>
                   </div>
-                </div>
-              ))}
-            </div>
-          </>
+                ))}
+              </div>
+            </>
+          )
         )}
 
         {/* Stats */}
