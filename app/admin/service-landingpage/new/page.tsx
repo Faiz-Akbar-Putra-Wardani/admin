@@ -65,7 +65,7 @@ export default function ServiceCreatePage() {
       await api.post('/admin/services-landing-pages', submitData);
 
       toast.success('Layanan berhasil ditambahkan!');
-      router.push('/admin/services-landing-pages');
+      router.push('/admin/services-landingpages');
     } catch (error: any) {
       const message = error?.response?.data?.message || 'Terjadi kesalahan tak terduga';
       setError(message);
